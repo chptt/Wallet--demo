@@ -1,0 +1,19 @@
+.qd-footer {
+  padding: var(--space-lg) var(--margin);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-mono-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  background: var(--color-surface);
+  border-top: var(--hairline);
+}
+
+.qd-footer__links {
+  display: flex;
+  gap: var(--space-md);
+}

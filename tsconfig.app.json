@@ -28,7 +28,12 @@
       "@ui": ["./src/ui/index.ts"],
       "@ui/*": ["./src/ui/*"],
       "@background": ["./src/background/index.ts"],
-      "@background/*": ["./src/background/*"]
+      "@background/*": ["./src/background/*"],
+      "@landing/*": ["./src/landing/*"],
+      "@components/*": ["./src/components/*"],
+      "@data/*": ["./src/data/*"],
+      "@config/*": ["./src/config/*"],
+      "@styles/*": ["./src/styles/*"]
     }
   },
   "include": ["src"]

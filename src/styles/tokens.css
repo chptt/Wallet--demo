@@ -1,0 +1,67 @@
+/*
+ * Design tokens transcribed from the "QD Wallet Editorial Concept" Stitch
+ * design system. This is the canonical palette/type/spacing scale for the
+ * landing experience — do not introduce ad hoc colors or sizes elsewhere.
+ */
+
+:root {
+  /* Color: editorial warm-ivory ground, forest-green anchor, four accents */
+  --color-surface: #faf9f6;
+  --color-surface-dim: #dbdad7;
+  --color-surface-container: #efeeeb;
+  --color-surface-container-high: #e9e8e5;
+  --color-ink: #1a1c1a;
+  --color-ink-muted: #414846;
+  --color-outline: #c1c8c4;
+
+  --color-forest: #073b35;
+  --color-forest-deep: #0c2b24;
+  --color-ivory: #f4f1e8;
+  --color-cyan: #63d8d0;
+  --color-coral: #ff6045;
+  --color-lime: #9ad63a;
+  --color-purple: #6d5ae6;
+
+  --color-on-forest: #f4f1e8;
+
+  /* Typography */
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Archivo Narrow', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --text-display-hero: 84px;
+  --text-display-hero-mobile: 48px;
+  --text-headline-lg: 52px;
+  --text-headline-lg-mobile: 34px;
+  --text-headline-md: 32px;
+  --text-headline-sm: 22px;
+  --text-title-editorial: 18px;
+  --text-body-lg: 18px;
+  --text-body-md: 15px;
+  --text-body-sm: 13px;
+  --text-label-ledger: 12px;
+  --text-label-mono-xs: 10px;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 3.5rem;
+  --gutter: 1.5rem;
+  --margin: 3rem;
+  --margin-mobile: 1rem;
+
+  /* Structure */
+  --hairline: 1px solid rgba(14, 17, 16, 0.12);
+  --hairline-strong: 1px solid var(--color-ink);
+
+  /* Set by QDNavbar's scroll listener; drives the chameleon hue-shift */
+  --chameleon-hue: 0deg;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --margin: var(--margin-mobile);
+  }
+}

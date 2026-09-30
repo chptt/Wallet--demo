@@ -1,0 +1,69 @@
+.qd-send-flow__row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+  border-bottom: var(--hairline);
+  font-size: var(--text-body-sm);
+}
+
+.qd-send-flow__mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  word-break: break-all;
+  text-align: right;
+}
+
+.qd-send-flow__quorum {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0;
+}
+
+.qd-send-flow__participant {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-body-sm);
+}
+
+.qd-send-flow__status {
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  color: var(--color-forest);
+  margin-bottom: var(--space-lg);
+}
+
+.qd-send-flow__actions {
+  display: flex;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+.qd-send-flow__success {
+  text-align: center;
+  padding: var(--space-md) 0;
+}
+
+.qd-send-flow__success-badge {
+  font-family: var(--font-display);
+  font-size: var(--text-headline-sm);
+  color: var(--color-forest);
+  margin-bottom: var(--space-md);
+}
+
+.qd-send-flow__success-detail {
+  margin-bottom: var(--space-sm);
+}
+
+.qd-send-flow__hash {
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  color: var(--color-ink-muted);
+  margin-bottom: var(--space-md);
+}
+
+.qd-send-flow__note {
+  font-size: var(--text-label-mono-xs);
+  color: var(--color-ink-muted);
+}

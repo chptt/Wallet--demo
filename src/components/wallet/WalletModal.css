@@ -1,0 +1,52 @@
+.qd-modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(12, 43, 36, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.qd-modal {
+  width: 100%;
+  max-width: 420px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: var(--hairline-strong);
+}
+
+.qd-modal:focus {
+  outline: none;
+}
+
+.qd-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: var(--hairline);
+}
+
+.qd-modal__title {
+  font-family: var(--font-display);
+  font-size: var(--text-headline-sm);
+}
+
+.qd-modal__close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--color-ink-muted);
+}
+
+.qd-modal__close:hover {
+  color: var(--color-ink);
+}
+
+.qd-modal__body {
+  padding: var(--space-lg);
+}

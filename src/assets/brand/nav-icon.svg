@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%" fill="none">
+  <defs>
+    <linearGradient id="nav-green" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#184b3f"/>
+      <stop offset="100%" stop-color="#0a251e"/>
+    </linearGradient>
+  </defs>
+  <!-- Curled tail -->
+  <path d="M 28 85 C 16 80, 10 68, 12 55 C 14 40, 26 32, 40 37 C 50 41, 54 53, 46 62 C 40 68, 30 66, 28 58 C 27 50, 34 46, 38 49" stroke="#ff6b4a" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <!-- Body arch -->
+  <path d="M 28 85 C 34 55, 55 35, 82 38 C 100 40, 110 52, 112 70 C 114 78, 108 88, 92 91 C 68 95, 45 93, 28 85 Z" fill="url(#nav-green)"/>
+  <!-- Dorsal crest -->
+  <polygon points="50,38 54,28 60,37" fill="#ff6b4a"/>
+  <polygon points="62,37 66,26 72,36" fill="#4eecd5"/>
+  <polygon points="74,36 78,28 84,37" fill="#a790ff"/>
+  <!-- Turret eye -->
+  <circle cx="98" cy="62" r="14" fill="#061813"/>
+  <circle cx="98" cy="62" r="11" fill="#ff6b4a"/>
+  <circle cx="98" cy="62" r="7.5" fill="#4eecd5"/>
+  <circle cx="98" cy="62" r="3.5" fill="#061813"/>
+  <circle cx="100" cy="60" r="1.5" fill="#ffffff"/>
+  <!-- Perch line -->
+  <path d="M 10 98 C 40 95, 75 92, 114 104" stroke="#0a251e" stroke-width="4.5" stroke-linecap="round"/>
+</svg>

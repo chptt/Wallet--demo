@@ -1,0 +1,27 @@
+.qd-eth-mark__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  perspective: 700px;
+}
+
+.qd-eth-mark__wrap {
+  width: 96px;
+  height: 116px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.qd-eth-mark__svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 12px 20px rgba(12, 43, 36, 0.25));
+}
+
+.qd-eth-mark__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label-mono-xs);
+  letter-spacing: 0.1em;
+  color: var(--color-ink-muted);
+}

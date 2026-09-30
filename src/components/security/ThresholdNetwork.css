@@ -1,0 +1,95 @@
+.qd-threshold {
+  padding: var(--space-xl) var(--margin);
+  background: var(--color-forest-deep);
+  color: var(--color-on-forest);
+}
+
+.qd-threshold .qd-section-heading__label,
+.qd-threshold .qd-section-heading__description {
+  color: rgba(244, 241, 232, 0.7);
+}
+
+.qd-threshold .qd-section-heading__title {
+  color: var(--color-on-forest);
+}
+
+.qd-threshold__quorum {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.qd-threshold__quorum-count {
+  font-family: var(--font-display);
+  font-size: var(--text-headline-md);
+  font-weight: 700;
+  color: var(--color-cyan);
+}
+
+.qd-threshold__quorum-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(244, 241, 232, 0.7);
+}
+
+.qd-threshold__participants {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gutter);
+  margin-bottom: var(--space-lg);
+}
+
+.qd-threshold-card {
+  border: 1px solid rgba(244, 241, 232, 0.18);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.qd-threshold-card .qd-badge--approved {
+  color: var(--color-cyan);
+  border-color: var(--color-cyan);
+}
+
+.qd-threshold-card .qd-badge--waiting {
+  color: var(--color-coral);
+  border-color: var(--color-coral);
+}
+
+.qd-threshold-card__label {
+  font-family: var(--font-display);
+  font-size: var(--text-headline-sm);
+}
+
+.qd-threshold-card__description {
+  color: rgba(244, 241, 232, 0.7);
+  font-size: var(--text-body-md);
+}
+
+.qd-threshold__toggle {
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-cyan);
+  text-decoration: underline;
+}
+
+.qd-threshold__detail {
+  margin-top: var(--space-md);
+  max-width: 60ch;
+  color: rgba(244, 241, 232, 0.75);
+  font-size: var(--text-body-sm);
+}
+
+@media (max-width: 900px) {
+  .qd-threshold__participants {
+    grid-template-columns: 1fr;
+  }
+}

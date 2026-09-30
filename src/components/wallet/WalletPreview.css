@@ -1,0 +1,117 @@
+.qd-wallet {
+  padding: var(--space-xl) var(--margin);
+  background: var(--color-surface-container);
+}
+
+.qd-wallet__panel {
+  border: var(--hairline-strong);
+  max-width: 960px;
+  background: var(--color-surface);
+}
+
+.qd-wallet__selector {
+  display: flex;
+  border-bottom: var(--hairline-strong);
+}
+
+.qd-wallet__account {
+  flex: 1;
+  padding: var(--space-md);
+  background: none;
+  border: none;
+  border-right: var(--hairline);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-muted);
+}
+
+.qd-wallet__account:last-child {
+  border-right: none;
+}
+
+.qd-wallet__account.is-active {
+  background: var(--color-forest-deep);
+  color: var(--color-on-forest);
+}
+
+.qd-wallet__body {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+}
+
+.qd-wallet__assets {
+  padding: var(--space-lg);
+  border-right: var(--hairline);
+}
+
+.qd-wallet-asset {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--space-sm) 0;
+  border-bottom: var(--hairline);
+}
+
+.qd-wallet-asset__symbol {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.qd-wallet-asset__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+}
+
+.qd-wallet-asset__value {
+  color: var(--color-ink-muted);
+}
+
+.qd-wallet__actions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.qd-wallet__activity {
+  padding: var(--space-lg);
+}
+
+.qd-wallet__activity-title {
+  font-family: var(--font-display);
+  font-size: var(--text-headline-sm);
+  margin-bottom: var(--space-md);
+}
+
+.qd-wallet-activity-row {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-sm) 0;
+  border-bottom: var(--hairline);
+  font-size: var(--text-body-sm);
+}
+
+.qd-wallet-activity-row__amount {
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+}
+
+.qd-wallet-activity-row__time {
+  color: var(--color-ink-muted);
+  font-size: var(--text-label-mono-xs);
+}
+
+@media (max-width: 700px) {
+  .qd-wallet__body {
+    grid-template-columns: 1fr;
+  }
+
+  .qd-wallet__assets {
+    border-right: none;
+    border-bottom: var(--hairline);
+  }
+}

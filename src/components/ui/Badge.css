@@ -1,0 +1,32 @@
+.qd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 24px;
+  padding: 0 0.6rem;
+  border: 1px solid var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: var(--text-label-ledger);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.qd-badge__dot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+}
+
+.qd-badge--neutral {
+  color: var(--color-ink-muted);
+}
+
+.qd-badge--approved {
+  color: var(--color-forest);
+  border-color: var(--color-forest);
+}
+
+.qd-badge--waiting {
+  color: var(--color-coral);
+  border-color: var(--color-coral);
+}

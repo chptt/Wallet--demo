@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:landing": "vite --config vite.landing.config.ts",
+    "build:landing": "vite build --config vite.landing.config.ts",
+    "preview:landing": "vite preview --config vite.landing.config.ts"
   },
   "dependencies": {
     "ethers": "^6.17.0",
+    "gsap": "^3.15.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

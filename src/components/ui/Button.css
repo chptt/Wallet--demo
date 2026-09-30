@@ -1,0 +1,43 @@
+.qd-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.9rem 1.75rem;
+  font-family: var(--font-title-editorial, var(--font-display));
+  font-size: var(--text-title-editorial);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border: var(--hairline-strong);
+  border-radius: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.qd-button--primary {
+  background: var(--color-forest-deep);
+  color: var(--color-ivory);
+}
+
+.qd-button--primary:hover {
+  background: var(--color-cyan);
+  color: var(--color-forest-deep);
+  transform: translate(-1px, -1px);
+}
+
+.qd-button--secondary {
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.qd-button--secondary:hover {
+  background: var(--color-surface-container);
+}
+
+.qd-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.qd-button:disabled:hover {
+  transform: none;
+}
