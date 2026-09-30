@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChameleonWallet — The Crypto Wallet That Adapts To You</title>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #1a1b1e;
+      --surface:     #25262b;
+      --border:      #373a40;
+      --primary:     #7c3aed;
+      --primary-lt:  #9d6ef5;
+      --accent:      #06b6d4;
+      --green:       #22c55e;
+      --text:        #f1f3f5;
+      --muted:       #868e96;
+      --hero-glow:   rgba(124,58,237,0.35);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Navbar ───────────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 68px;
+      background: rgba(26,27,30,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo svg { width: 36px; height: 36px; }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--primary-lt); color: var(--primary-lt); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--primary-lt); transform: translateY(-1px); }
+
+    /* ── Hero ─────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 5% 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Radial glow behind the mascot */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, var(--hero-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 1100px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(36px, 5vw, 62px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+    }
+
+    .hero-text h1 span {
+      background: linear-gradient(135deg, var(--primary-lt), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 460px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .hero-actions .btn {
+      padding: 14px 28px;
+      font-size: 16px;
+    }
+
+    .hero-mascot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Floating animation on the mascot */
+    .mascot-wrap {
+      animation: float 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 40px rgba(124,58,237,0.5));
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-18px); }
+    }
+
+    /* ── Trusted by bar ───────────────────────────────────────────────── */
+    .trusted {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 5%;
+      text-align: center;
+    }
+
+    .trusted p {
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    .trusted-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .trusted-logos span {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--muted);
+      opacity: 0.6;
+      letter-spacing: -0.5px;
+    }
+
+    /* ── Stats ────────────────────────────────────────────────────────── */
+    .stats {
+      padding: 80px 5%;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      text-align: center;
+    }
+
+    .stat h3 {
+      font-size: clamp(36px, 4vw, 52px);
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary-lt), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+    }
+
+    .stat p {
+      font-size: 15px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    /* ── Features ─────────────────────────────────────────────────────── */
+    .features {
+      padding: 80px 5%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--primary-lt);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 520px;
+      margin-bottom: 56px;
+      line-height: 1.7;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-4px);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 18px;
+    }
+
+    .feature-card h4 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── How it works ─────────────────────────────────────────────────── */
+    .how {
+      padding: 80px 5%;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .how-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+      margin-top: 48px;
+      position: relative;
+    }
+
+    /* Connecting line */
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: 16.6%;
+      right: 16.6%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0.4;
+    }
+
+    .step {
+      text-align: center;
+      position: relative;
+    }
+
+    .step-num {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h4 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 240px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ── CTA Section ──────────────────────────────────────────────────── */
+    .cta-section {
+      padding: 100px 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(30px, 4vw, 50px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .cta-section p {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 500px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    .cta-section .btn {
+      padding: 16px 36px;
+      font-size: 17px;
+      position: relative;
+    }
+
+    /* ── Footer ───────────────────────────────────────────────────────── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 40px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    footer nav {
+      position: static;
+      background: transparent;
+      backdrop-filter: none;
+      border: none;
+      padding: 0;
+      height: auto;
+    }
+
+    footer nav ul {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      font-size: 14px;
+    }
+
+    footer nav ul a { color: var(--muted); }
+    footer nav ul a:hover { color: var(--text); }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── Responsive ───────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero-inner        { grid-template-columns: 1fr; text-align: center; }
+      .hero-text p       { margin: 0 auto 36px; }
+      .hero-actions      { justify-content: center; }
+      .hero-mascot       { order: -1; }
+      .mascot-wrap svg   { width: 260px; height: 260px; }
+      .stats             { grid-template-columns: 1fr; }
+      .features-grid     { grid-template-columns: 1fr; }
+      .steps             { grid-template-columns: 1fr; }
+      .steps::before     { display: none; }
+      .nav-links         { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-logo">
+    <!-- Small chameleon in the nav -->
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="18" cy="22" rx="13" ry="9" fill="#22c55e"/>
+      <ellipse cx="18" cy="22" rx="10" ry="7" fill="#16a34a"/>
+      <!-- Stripes -->
+      <path d="M8 20 Q18 16 28 20" stroke="#15803d" stroke-width="1.5" fill="none"/>
+      <path d="M8 23 Q18 19 28 23" stroke="#15803d" stroke-width="1.5" fill="none"/>
+      <!-- Head -->
+      <ellipse cx="28" cy="18" rx="6" ry="5" fill="#22c55e"/>
+      <!-- Eye -->
+      <circle cx="31" cy="16" r="2.5" fill="#fff"/>
+      <circle cx="31.8" cy="16" r="1.2" fill="#1a1b1e"/>
+      <circle cx="32.3" cy="15.5" r="0.4" fill="#fff"/>
+      <!-- Tail curl -->
+      <path d="M8 24 Q2 26 4 30 Q6 34 10 32" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <!-- Tongue -->
+      <path d="M34 18 L40 15" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="40" cy="15" r="1.5" fill="#ef4444"/>
+      <!-- Legs -->
+      <path d="M13 29 L11 35" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M18 30 L16 36" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M23 29 L25 35" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    ChameleonWallet
+  </div>
+
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#download">Download</a></li>
+    <li><a href="#">Docs</a></li>
+  </ul>
+
+  <div class="nav-cta">
+    <button class="btn btn-outline">Log In</button>
+    <button class="btn btn-primary">Download Now</button>
+  </div>
+</nav>
+
+
+<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>The Crypto Wallet That <span>Adapts To You</span></h1>
+      <p>
+        ChameleonWallet lets you manage Ethereum, send transactions,
+        and connect to any dApp — securely, privately, right in your browser.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="download">Install for Chrome</button>
+        <button class="btn btn-outline">Learn More</button>
+      </div>
+    </div>
+
+    <div class="hero-mascot">
+      <div class="mascot-wrap">
+        <!-- Large chameleon SVG mascot -->
+        <svg width="400" height="400" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- Glow circle behind -->
+          <circle cx="100" cy="110" r="75" fill="url(#heroGlow)" opacity="0.3"/>
+
+          <!-- Body -->
+          <ellipse cx="95" cy="120" rx="58" ry="42" fill="#22c55e"/>
+          <!-- Body shading -->
+          <ellipse cx="95" cy="115" rx="50" ry="34" fill="#16a34a"/>
+          <!-- Body pattern stripes -->
+          <path d="M42 112 Q95 96 148 112" stroke="#15803d" stroke-width="3" fill="none" opacity="0.7"/>
+          <path d="M42 120 Q95 104 148 120" stroke="#15803d" stroke-width="3" fill="none" opacity="0.7"/>
+          <path d="M42 128 Q95 112 148 128" stroke="#15803d" stroke-width="3" fill="none" opacity="0.7"/>
+
+          <!-- Belly (lighter) -->
+          <ellipse cx="95" cy="128" rx="35" ry="22" fill="#4ade80" opacity="0.5"/>
+
+          <!-- Head -->
+          <ellipse cx="152" cy="100" rx="30" ry="25" fill="#22c55e"/>
+          <!-- Head ridge / crest -->
+          <path d="M140 78 Q155 68 168 75 Q162 85 152 83 Q144 82 140 78Z" fill="#16a34a"/>
+          <path d="M145 72 Q158 62 168 68" stroke="#15803d" stroke-width="2" fill="none"/>
+
+          <!-- Casque bumps (chameleon head crest) -->
+          <circle cx="144" cy="78" r="4" fill="#15803d"/>
+          <circle cx="153" cy="73" r="3.5" fill="#15803d"/>
+          <circle cx="162" cy="72" r="3" fill="#15803d"/>
+
+          <!-- Eye (large, iconic chameleon eye) -->
+          <circle cx="164" cy="90" r="14" fill="#fff"/>
+          <circle cx="164" cy="90" r="11" fill="#06b6d4"/>
+          <circle cx="164" cy="90" r="7" fill="#0e7490"/>
+          <circle cx="164" cy="90" r="4" fill="#1a1b1e"/>
+          <!-- Eye shine -->
+          <circle cx="167" cy="87" r="2" fill="#fff"/>
+          <circle cx="162" cy="92" r="1" fill="#fff" opacity="0.6"/>
+          <!-- Eye ring -->
+          <circle cx="164" cy="90" r="14" stroke="#0891b2" stroke-width="2" fill="none"/>
+
+          <!-- Tongue -->
+          <path d="M178 100 Q196 88 208 82" stroke="#ef4444" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <!-- Tongue tip (forked) -->
+          <path d="M206 80 L212 76 M206 80 L210 85" stroke="#ef4444" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- Tongue sticky ball -->
+          <circle cx="207" cy="81" r="5" fill="#dc2626"/>
+
+          <!-- Tail (curled) -->
+          <path d="M40 128 Q20 135 18 148 Q16 162 26 168 Q36 172 42 162 Q48 152 38 148"
+                stroke="#22c55e" stroke-width="10" stroke-linecap="round" fill="none"/>
+          <path d="M40 128 Q20 135 18 148 Q16 162 26 168 Q36 172 42 162 Q48 152 38 148"
+                stroke="#16a34a" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+          <!-- Legs -->
+          <!-- Front left -->
+          <path d="M70 148 Q62 162 58 170" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
+          <path d="M58 170 L52 175 M58 170 L62 176 M58 170 L56 177" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- Front right -->
+          <path d="M90 152 Q86 166 82 174" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
+          <path d="M82 174 L76 179 M82 174 L84 180" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- Back left -->
+          <path d="M110 152 Q116 166 120 174" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
+          <path d="M120 174 L126 179 M120 174 L118 180" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- Back right -->
+          <path d="M128 148 Q136 162 140 170" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
+          <path d="M140 170 L146 175 M140 170 L144 176 M140 170 L138 177" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- Spine ridge -->
+          <path d="M55 100 Q75 88 95 86 Q115 84 135 90"
+                stroke="#15803d" stroke-width="5" stroke-linecap="round" fill="none"/>
+          <!-- Spine bumps -->
+          <circle cx="65"  cy="96"  r="5" fill="#15803d"/>
+          <circle cx="80"  cy="90"  r="5" fill="#15803d"/>
+          <circle cx="95"  cy="87"  r="5" fill="#15803d"/>
+          <circle cx="110" cy="87"  r="5" fill="#15803d"/>
+          <circle cx="125" cy="90"  r="5" fill="#15803d"/>
+
+          <!-- Crypto coins floating around -->
+          <g opacity="0.9">
+            <!-- ETH diamond -->
+            <polygon points="35,55 28,65 35,70 42,65" fill="#7c3aed" opacity="0.9"/>
+            <polygon points="35,55 28,65 35,62" fill="#9d6ef5"/>
+            <polygon points="35,70 42,65 35,62" fill="#5b21b6"/>
+          </g>
+          <g opacity="0.8">
+            <!-- Small coin -->
+            <circle cx="170" cy="140" r="10" fill="#f59e0b" opacity="0.85"/>
+            <text x="170" y="144" text-anchor="middle" font-size="9" font-weight="bold" fill="#1a1b1e">₿</text>
+          </g>
+          <g opacity="0.7">
+            <!-- Tiny ETH -->
+            <polygon points="50,155 46,161 50,163 54,161" fill="#06b6d4" opacity="0.8"/>
+            <polygon points="50,155 46,161 50,159" fill="#67e8f9"/>
+          </g>
+
+          <!-- Gradient defs -->
+          <defs>
+            <radialGradient id="heroGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stop-color="#7c3aed"/>
+              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── TRUSTED BY ─────────────────────────────────────────────────────────── -->
+<div class="trusted">
+  <p>Trusted by developers building on</p>
+  <div class="trusted-logos">
+    <span>Ethereum</span>
+    <span>Uniswap</span>
+    <span>OpenSea</span>
+    <span>Aave</span>
+    <span>Compound</span>
+    <span>ENS</span>
+  </div>
+</div>
+
+
+<!-- ── STATS ──────────────────────────────────────────────────────────────── -->
+<div class="stats">
+  <div class="stat">
+    <h3>30M+</h3>
+    <p>Monthly active users</p>
+  </div>
+  <div class="stat">
+    <h3>$0</h3>
+    <p>Always free to use</p>
+  </div>
+  <div class="stat">
+    <h3>100+</h3>
+    <p>Networks supported</p>
+  </div>
+</div>
+
+
+<!-- ── FEATURES ───────────────────────────────────────────────────────────── -->
+<section class="features" id="features">
+  <p class="section-label">Why ChameleonWallet</p>
+  <h2 class="section-title">Everything you need,<br/>nothing you don't</h2>
+  <p class="section-sub">
+    A self-custodial wallet built for security, simplicity, and full
+    compatibility with the Ethereum ecosystem.
+  </p>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔐</div>
+      <h4>Self-Custodial</h4>
+      <p>Your keys, your crypto. Private keys are encrypted locally with AES-256-GCM and never leave your device.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h4>Instant Transactions</h4>
+      <p>Send ETH in seconds with real-time gas estimation. Review fees before you confirm — no surprises.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h4>dApp Ready</h4>
+      <p>Connects to any dApp via the standard window.ethereum provider. Works with Uniswap, OpenSea, and more.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌍</div>
+      <h4>Multi-Network</h4>
+      <p>Switch between Ethereum Mainnet, Sepolia testnet, and local Anvil dev nodes in one click.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h4>Password Protected</h4>
+      <p>Wallet locks automatically. PBKDF2 key derivation with 210,000 iterations protects against brute force.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌱</div>
+      <h4>BIP-39 Recovery</h4>
+      <p>Standard 12-word seed phrase. Import your wallet on any device at any time — you're always in control.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── HOW IT WORKS ───────────────────────────────────────────────────────── -->
+<section class="how" id="how">
+  <div class="how-inner">
+    <p class="section-label">Get Started</p>
+    <h2 class="section-title">Up and running in 60 seconds</h2>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>Install the Extension</h4>
+        <p>Add ChameleonWallet to Chrome from the Web Store — or load it unpacked from the source.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>Create Your Wallet</h4>
+        <p>Set a password and write down your 12-word seed phrase. That's your backup — keep it safe.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>Start Exploring Web3</h4>
+        <p>Connect to any dApp, send ETH, sign messages, and manage your assets on any EVM network.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── CTA ────────────────────────────────────────────────────────────────── -->
+<section class="cta-section" id="download">
+  <h2>Ready to take control of your crypto?</h2>
+  <p>Join millions of users managing their digital assets with complete self-custody.</p>
+  <button class="btn btn-primary">Install ChameleonWallet — It's Free</button>
+</section>
+
+
+<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-logo">
+    <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
+      <ellipse cx="18" cy="22" rx="13" ry="9" fill="#22c55e"/>
+      <ellipse cx="18" cy="22" rx="10" ry="7" fill="#16a34a"/>
+      <ellipse cx="28" cy="18" rx="6" ry="5" fill="#22c55e"/>
+      <circle cx="31" cy="16" r="2" fill="#fff"/>
+      <circle cx="31.6" cy="16" r="1" fill="#1a1b1e"/>
+      <path d="M8 24 Q2 26 4 30 Q6 34 10 32" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
+    </svg>
+    ChameleonWallet
+  </div>
+
+  <nav>
+    <ul>
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">GitHub</a></li>
+      <li><a href="#">Docs</a></li>
+    </ul>
+  </nav>
+
+  <p class="footer-copy">© 2026 ChameleonWallet. Open source. Not affiliated with MetaMask.</p>
+</footer>
+
+</body>
+</html>
