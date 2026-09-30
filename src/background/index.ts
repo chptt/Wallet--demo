@@ -140,7 +140,7 @@ async function getWallet(password: string, rpcUrl: string): Promise<Wallet> {
 }
 
 // ── Default RPC — falls back to Sepolia if no network is stored yet ────────
-const DEFAULT_RPC = 'https://rpc.sepolia.org'
+const DEFAULT_RPC = 'https://eth-sepolia.g.alchemy.com/v2/alch__DxCatrB-KPcWCRrURl9g'
 
 /**
  * Returns the RPC URL and chainId the user has selected in the popup.

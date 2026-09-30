@@ -25,7 +25,7 @@ export const NETWORKS: Network[] = [
   },
   {
     chainId: 11155111,
-    rpcUrl: 'https://rpc.sepolia.org',
+    rpcUrl: 'https://eth-sepolia.g.alchemy.com/v2/alch__DxCatrB-KPcWCRrURl9g',
     name: 'Sepolia Testnet',
     currency: 'ETH',
     explorerUrl: 'https://sepolia.etherscan.io',
