@@ -1,804 +1,1694 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ChameleonWallet — The Crypto Wallet That Adapts To You</title>
-  <style>
-    /* ── Reset & base ─────────────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CHAMELEON — Adapt to Every Chain</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════
+   RESET & VARIABLES
+═══════════════════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080a;
+  --bg2:#0d0f12;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+  --purple:#7c3aed;
+  --purple-lt:#a78bfa;
+  --purple-dk:#4c1d95;
+  --cyan:#06b6d4;
+  --green:#10b981;
+  --emerald:#34d399;
+  --text:#f0f2f5;
+  --muted:#6b7280;
+  --muted2:#9ca3af;
+  --glow-purple:rgba(124,58,237,0.3);
+  --glow-cyan:rgba(6,182,212,0.25);
+  --glow-green:rgba(16,185,129,0.25);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+a{text-decoration:none;color:inherit}
 
-    :root {
-      --bg:          #1a1b1e;
-      --surface:     #25262b;
-      --border:      #373a40;
-      --primary:     #7c3aed;
-      --primary-lt:  #9d6ef5;
-      --accent:      #06b6d4;
-      --green:       #22c55e;
-      --text:        #f1f3f5;
-      --muted:       #868e96;
-      --hero-glow:   rgba(124,58,237,0.35);
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-    html { scroll-behavior: smooth; }
+.gradient-text{
+  background:linear-gradient(135deg,#a78bfa 0%,#34d399 60%,#06b6d4 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.gradient-text-2{
+  background:linear-gradient(135deg,#7c3aed 0%,#06b6d4 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   UTILITY
+═══════════════════════════════════════════════════════════════════════ */
+.section-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--purple-lt);
+  background:rgba(124,58,237,.12);
+  border:1px solid rgba(124,58,237,.25);
+  padding:6px 14px;border-radius:50px;
+  margin-bottom:20px;
+}
+.section-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--purple-lt);animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 
-    a { color: inherit; text-decoration: none; }
+/* ═══════════════════════════════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════════════════════════════ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 28px;border-radius:50px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .25s cubic-bezier(.4,0,.2,1);
+  border:none;position:relative;overflow:hidden;
+  white-space:nowrap;
+}
+.btn::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  opacity:0;transition:opacity .2s;
+}
+.btn:hover::after{opacity:1}
+.btn-primary{
+  background:linear-gradient(135deg,var(--purple),var(--purple-dk));
+  color:#fff;
+  box-shadow:0 0 30px var(--glow-purple),0 4px 15px rgba(0,0,0,.4);
+}
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 50px var(--glow-purple),0 8px 25px rgba(0,0,0,.5);
+}
+.btn-ghost{
+  background:rgba(255,255,255,.05);
+  color:var(--text);
+  border:1.5px solid var(--border);
+  backdrop-filter:blur(8px);
+}
+.btn-ghost:hover{
+  background:rgba(255,255,255,.09);
+  border-color:rgba(255,255,255,.18);
+  transform:translateY(-2px);
+}
+.btn-connect{
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  color:#fff;
+  padding:11px 22px;font-size:14px;
+  box-shadow:0 0 20px var(--glow-purple);
+}
+.btn-connect:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 40px var(--glow-purple);
+}
+.btn-lg{padding:16px 36px;font-size:17px}
 
-    /* ── Navbar ───────────────────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5%;
-      height: 68px;
-      background: rgba(26,27,30,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════════════════════════════════════ */
+#navbar{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:0 6%;height:70px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all .4s ease;
+}
+#navbar.scrolled{
+  background:rgba(7,8,10,.88);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 4px 30px rgba(0,0,0,.4);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  font-size:20px;font-weight:900;letter-spacing:-.5px;
+}
+.nav-logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{
+  font-size:14px;font-weight:500;color:var(--muted2);
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:12px}
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
+/* Mobile nav toggle */
+.nav-toggle{display:none;background:none;border:none;cursor:pointer;padding:4px}
+.nav-toggle span{display:block;width:22px;height:2px;background:var(--text);margin:5px 0;transition:.3s}
 
-    .nav-logo svg { width: 36px; height: 36px; }
+/* ═══════════════════════════════════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:90px 6% 60px;
+  position:relative;overflow:hidden;
+}
 
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-      font-size: 15px;
-      font-weight: 500;
-    }
+/* Noise texture overlay */
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.4;pointer-events:none;z-index:0;
+}
 
-    .nav-links a {
-      color: var(--muted);
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--text); }
+/* Grid lines */
+#hero::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(124,58,237,.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(124,58,237,.06) 1px,transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%);
+}
 
-    .nav-cta {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+.hero-inner{
+  max-width:1200px;width:100%;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  align-items:center;position:relative;z-index:1;
+}
 
-    .btn {
-      padding: 10px 22px;
-      border-radius: 50px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: none;
-    }
+/* Glow orbs */
+.glow-orb{
+  position:absolute;border-radius:50%;
+  filter:blur(80px);pointer-events:none;
+}
+.orb1{width:500px;height:500px;background:var(--glow-purple);top:-10%;right:-5%;opacity:.6}
+.orb2{width:400px;height:400px;background:var(--glow-cyan);bottom:10%;left:-5%;opacity:.4}
 
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--border);
-      color: var(--text);
-    }
-    .btn-outline:hover { border-color: var(--primary-lt); color: var(--primary-lt); }
+.hero-text{position:relative}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--emerald);
+  margin-bottom:20px;
+}
+.hero-eyebrow-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--emerald);
+  animation:pulse-glow 2s infinite;
+}
+@keyframes pulse-glow{
+  0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.4)}
+  50%{box-shadow:0 0 0 8px rgba(52,211,153,0)}
+}
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-    .btn-primary:hover { background: var(--primary-lt); transform: translateY(-1px); }
+.hero-h1{
+  font-size:clamp(44px,5.5vw,72px);
+  font-weight:900;line-height:1.04;
+  letter-spacing:-2px;margin-bottom:24px;
+}
 
-    /* ── Hero ─────────────────────────────────────────────────────────── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 100px 5% 60px;
-      position: relative;
-      overflow: hidden;
-    }
+.hero-sub{
+  font-size:18px;color:var(--muted2);
+  max-width:480px;line-height:1.7;margin-bottom:40px;
+}
 
-    /* Radial glow behind the mascot */
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, var(--hero-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 
-    .hero-inner {
-      max-width: 1100px;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      position: relative;
-      z-index: 1;
-    }
+.hero-trust{
+  display:flex;align-items:center;gap:12px;
+  margin-top:32px;font-size:13px;color:var(--muted);
+}
+.trust-avatars{display:flex}
+.trust-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  border:2px solid var(--bg);margin-left:-8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+}
+.trust-avatar:first-child{margin-left:0}
 
-    .hero-text h1 {
-      font-size: clamp(36px, 5vw, 62px);
-      font-weight: 900;
-      line-height: 1.08;
-      letter-spacing: -1.5px;
-      margin-bottom: 24px;
-    }
+/* Canvas container */
+.hero-visual{
+  position:relative;display:flex;
+  justify-content:center;align-items:center;
+}
+#chameleon-canvas{
+  width:100%;max-width:540px;
+  cursor:none;
+  filter:drop-shadow(0 0 60px rgba(124,58,237,.25))
+         drop-shadow(0 0 120px rgba(6,182,212,.1));
+}
 
-    .hero-text h1 span {
-      background: linear-gradient(135deg, var(--primary-lt), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   SCROLL INDICATOR
+═══════════════════════════════════════════════════════════════════════ */
+.scroll-hint{
+  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;
+  animation:fade-up-down 2.5s infinite;z-index:1;
+}
+@keyframes fade-up-down{0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}50%{opacity:.9;transform:translateX(-50%) translateY(6px)}}
+.scroll-line{width:1px;height:40px;background:linear-gradient(var(--purple),transparent)}
 
-    .hero-text p {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 460px;
-      margin-bottom: 36px;
-      line-height: 1.7;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   NETWORKS SECTION
+═══════════════════════════════════════════════════════════════════════ */
+#networks{
+  padding:100px 6%;
+  position:relative;overflow:hidden;
+}
+.networks-inner{max-width:1200px;margin:0 auto}
+.networks-header{text-align:center;margin-bottom:60px}
+.networks-header h2{
+  font-size:clamp(32px,4vw,52px);font-weight:900;
+  letter-spacing:-1.5px;margin-bottom:16px;
+}
+.networks-header p{font-size:17px;color:var(--muted2);max-width:520px;margin:0 auto}
 
-    .hero-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
+.networks-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.network-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:28px 24px;
+  cursor:pointer;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.network-card::before{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:radial-gradient(circle at 50% 0%,var(--card-glow,rgba(124,58,237,.12)),transparent 70%);
+  opacity:0;transition:opacity .3s;
+}
+.network-card:hover::before,.network-card.active::before{opacity:1}
+.network-card:hover,.network-card.active{
+  border-color:var(--card-border,rgba(124,58,237,.4));
+  transform:translateY(-4px);
+  box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 0 1px var(--card-border,rgba(124,58,237,.2));
+}
+.network-card.active{transform:translateY(-6px)}
 
-    .hero-actions .btn {
-      padding: 14px 28px;
-      font-size: 16px;
-    }
+.network-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;margin-bottom:16px;
+  background:rgba(255,255,255,.06);
+}
+.network-name{font-size:17px;font-weight:700;margin-bottom:6px}
+.network-desc{font-size:13px;color:var(--muted2);line-height:1.5}
+.network-status{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;font-size:12px;font-weight:600;
+  color:var(--emerald);
+}
+.network-status::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--emerald)}
 
-    .hero-mascot {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   FEATURES SECTION
+═══════════════════════════════════════════════════════════════════════ */
+#features{
+  padding:100px 6%;
+  background:linear-gradient(to bottom,transparent,rgba(124,58,237,.04),transparent);
+}
+.features-inner{max-width:1200px;margin:0 auto}
+.features-header{margin-bottom:60px}
+.features-header h2{
+  font-size:clamp(30px,4vw,50px);font-weight:900;
+  letter-spacing:-1.5px;margin-bottom:16px;
+}
+.features-header p{font-size:17px;color:var(--muted2);max-width:500px;line-height:1.7}
 
-    /* Floating animation on the mascot */
-    .mascot-wrap {
-      animation: float 4s ease-in-out infinite;
-      filter: drop-shadow(0 0 40px rgba(124,58,237,0.5));
-    }
+.features-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.feature-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;padding:30px;
+  transition:all .3s ease;
+  position:relative;overflow:hidden;
+}
+.feature-card::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--cyan));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform .3s ease;
+}
+.feature-card:hover::after{transform:scaleX(1)}
+.feature-card:hover{
+  border-color:rgba(124,58,237,.3);
+  transform:translateY(-4px);
+  background:rgba(255,255,255,.06);
+}
+.feature-icon-wrap{
+  width:52px;height:52px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(6,182,212,.1));
+  border:1px solid rgba(124,58,237,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:18px;
+}
+.feature-card h4{font-size:17px;font-weight:700;margin-bottom:10px}
+.feature-card p{font-size:14px;color:var(--muted2);line-height:1.65}
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-18px); }
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   SECURITY SECTION
+═══════════════════════════════════════════════════════════════════════ */
+#security{padding:100px 6%;position:relative;overflow:hidden}
+.security-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:80px;align-items:center;
+}
+.security-text h2{
+  font-size:clamp(30px,4vw,50px);font-weight:900;
+  letter-spacing:-1.5px;margin-bottom:20px;
+  line-height:1.1;
+}
+.security-text p{font-size:16px;color:var(--muted2);line-height:1.75;margin-bottom:16px}
 
-    /* ── Trusted by bar ───────────────────────────────────────────────── */
-    .trusted {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 28px 5%;
-      text-align: center;
-    }
+.security-items{display:flex;flex-direction:column;gap:16px;margin-top:32px}
+.security-item{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 20px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  transition:border-color .2s;
+}
+.security-item:hover{border-color:rgba(124,58,237,.3)}
+.security-item-icon{
+  width:36px;height:36px;flex-shrink:0;
+  border-radius:10px;
+  background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(16,185,129,.1));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.security-item h5{font-size:14px;font-weight:700;margin-bottom:4px}
+.security-item p{font-size:13px;color:var(--muted2);line-height:1.5;margin:0}
 
-    .trusted p {
-      font-size: 13px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 20px;
-    }
+/* Crypto background animation */
+.security-visual{
+  position:relative;
+  background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(6,182,212,.06));
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:40px;
+  overflow:hidden;
+  min-height:420px;
+  display:flex;align-items:center;justify-content:center;
+}
+.security-visual::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    45deg,
+    transparent,transparent 20px,
+    rgba(124,58,237,.03) 20px,rgba(124,58,237,.03) 21px
+  );
+}
+#crypto-canvas{width:100%;height:100%;position:absolute;inset:0;opacity:.6}
+.security-shield{
+  position:relative;z-index:1;text-align:center;
+}
+.shield-icon{
+  font-size:80px;margin-bottom:16px;
+  filter:drop-shadow(0 0 30px rgba(124,58,237,.6));
+  animation:shield-float 4s ease-in-out infinite;
+}
+@keyframes shield-float{
+  0%,100%{transform:translateY(0) rotate(-2deg)}
+  50%{transform:translateY(-14px) rotate(2deg)}
+}
+.shield-text{font-size:18px;font-weight:700;margin-bottom:8px}
+.shield-sub{font-size:13px;color:var(--muted2)}
 
-    .trusted-logos {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 48px;
-      flex-wrap: wrap;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   WALLET PREVIEW SECTION
+═══════════════════════════════════════════════════════════════════════ */
+#preview{
+  padding:100px 6%;
+  background:linear-gradient(to bottom,transparent,rgba(6,182,212,.03),transparent);
+}
+.preview-inner{max-width:1200px;margin:0 auto}
+.preview-header{text-align:center;margin-bottom:60px}
+.preview-header h2{
+  font-size:clamp(30px,4vw,50px);font-weight:900;
+  letter-spacing:-1.5px;margin-bottom:16px;
+}
+.preview-header p{font-size:17px;color:var(--muted2);max-width:480px;margin:0 auto}
 
-    .trusted-logos span {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--muted);
-      opacity: 0.6;
-      letter-spacing: -0.5px;
-    }
+.preview-mockup{
+  max-width:380px;margin:0 auto;
+  background:linear-gradient(145deg,#131419,#0d0f12);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.04),
+    0 40px 100px rgba(0,0,0,.7),
+    0 0 80px rgba(124,58,237,.15);
+}
 
-    /* ── Stats ────────────────────────────────────────────────────────── */
-    .stats {
-      padding: 80px 5%;
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      text-align: center;
-    }
+/* Mockup top bar */
+.mockup-top{
+  background:rgba(255,255,255,.03);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:14px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.mockup-network{
+  display:flex;align-items:center;gap:6px;
+  font-size:12px;font-weight:600;
+  color:#22c55e;
+  background:rgba(34,197,94,.1);
+  border:1px solid rgba(34,197,94,.2);
+  padding:4px 12px;border-radius:50px;
+}
+.mockup-network-dot{width:6px;height:6px;border-radius:50%;background:#22c55e}
+.mockup-lock{
+  font-size:12px;color:var(--muted);
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--border);
+  padding:4px 12px;border-radius:50px;cursor:pointer;
+}
 
-    .stat h3 {
-      font-size: clamp(36px, 4vw, 52px);
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--primary-lt), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -1px;
-    }
+/* Mockup body */
+.mockup-body{padding:24px 20px}
+.mockup-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--purple),var(--cyan));
+  margin:0 auto 12px;
+}
+.mockup-address{
+  text-align:center;font-size:13px;
+  font-family:monospace;color:var(--muted2);
+  margin-bottom:20px;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.mockup-copy{font-size:11px;cursor:pointer;opacity:.6}
+.mockup-balance-label{
+  text-align:center;font-size:12px;color:var(--muted);margin-bottom:4px
+}
+.mockup-balance{
+  text-align:center;
+  font-size:34px;font-weight:800;margin-bottom:4px;
+  background:linear-gradient(135deg,var(--text),var(--muted2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.mockup-balance-usd{text-align:center;font-size:14px;color:var(--muted);margin-bottom:24px}
 
-    .stat p {
-      font-size: 15px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
+/* Action buttons */
+.mockup-actions{display:flex;gap:10px;margin-bottom:24px}
+.mockup-btn{
+  flex:1;padding:11px;border-radius:12px;
+  border:none;cursor:pointer;font-size:14px;font-weight:700;
+}
+.mockup-btn-primary{background:var(--purple);color:#fff}
+.mockup-btn-secondary{
+  background:rgba(255,255,255,.06);
+  color:var(--text);
+  border:1px solid var(--border);
+}
 
-    /* ── Features ─────────────────────────────────────────────────────── */
-    .features {
-      padding: 80px 5%;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+/* Token list */
+.mockup-section-title{
+  font-size:12px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted);
+  margin-bottom:12px;
+}
+.mockup-token{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.mockup-token:last-child{border-bottom:none}
+.token-icon{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;
+  flex-shrink:0;
+}
+.token-info{flex:1}
+.token-name{font-size:14px;font-weight:600}
+.token-network{font-size:12px;color:var(--muted)}
+.token-amount{text-align:right}
+.token-balance{font-size:14px;font-weight:600}
+.token-usd{font-size:12px;color:var(--muted)}
 
-    .section-label {
-      font-size: 13px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--primary-lt);
-      margin-bottom: 12px;
-    }
+/* RPC footer */
+.mockup-rpc{
+  padding:12px 20px;
+  background:rgba(255,255,255,.02);
+  border-top:1px solid rgba(255,255,255,.05);
+  font-size:11px;color:var(--muted);
+  text-align:center;
+}
 
-    .section-title {
-      font-size: clamp(28px, 3.5vw, 44px);
-      font-weight: 900;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   FINAL CTA
+═══════════════════════════════════════════════════════════════════════ */
+#cta{
+  padding:120px 6%;
+  text-align:center;position:relative;overflow:hidden;
+}
+#cta::before{
+  content:'';position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:800px;height:500px;
+  background:radial-gradient(ellipse,rgba(124,58,237,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+#cta h2{
+  font-size:clamp(36px,5vw,68px);
+  font-weight:900;letter-spacing:-2px;
+  margin-bottom:20px;line-height:1.05;
+  position:relative;
+}
+#cta p{
+  font-size:18px;color:var(--muted2);
+  max-width:480px;margin:0 auto 40px;
+  position:relative;
+}
+.cta-actions{
+  display:flex;gap:14px;justify-content:center;
+  flex-wrap:wrap;position:relative;
+}
 
-    .section-sub {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 520px;
-      margin-bottom: 56px;
-      line-height: 1.7;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════════════════════════════ */
+footer{
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  padding:40px 6%;
+  display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;gap:20px;
+}
+.footer-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px}
+.footer-links{display:flex;gap:24px;list-style:none}
+.footer-links a{font-size:13px;color:var(--muted);transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+.footer-copy{font-size:12px;color:var(--muted)}
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   SCROLL ANIMATIONS
+═══════════════════════════════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+.reveal-delay-5{transition-delay:.5s}
 
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   WALLET MODAL
+═══════════════════════════════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:2000;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:#0d0f12;
+  border:1px solid rgba(124,58,237,.3);
+  border-radius:24px;
+  padding:36px;
+  width:90%;max-width:420px;
+  box-shadow:0 0 80px rgba(124,58,237,.2),0 40px 80px rgba(0,0,0,.6);
+  transform:scale(.95) translateY(20px);
+  transition:transform .3s;
+}
+.modal-overlay.open .modal{transform:scale(1) translateY(0)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.modal-title{font-size:20px;font-weight:800}
+.modal-close{
+  background:none;border:none;cursor:pointer;
+  color:var(--muted);font-size:22px;line-height:1;
+  transition:color .2s;
+}
+.modal-close:hover{color:var(--text)}
+.modal-desc{font-size:14px;color:var(--muted2);margin-bottom:24px;line-height:1.6}
 
-    .feature-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
-    }
+.modal-options{display:flex;flex-direction:column;gap:10px}
+.modal-option{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border);
+  border-radius:14px;
+  cursor:pointer;
+  transition:all .2s;text-align:left;width:100%;
+  font-family:inherit;
+}
+.modal-option:hover{
+  background:rgba(124,58,237,.12);
+  border-color:rgba(124,58,237,.35);
+}
+.modal-option-icon{font-size:24px;flex-shrink:0}
+.modal-option-text h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.modal-option-text p{font-size:12px;color:var(--muted);margin:0}
 
-    .feature-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      margin-bottom: 18px;
-    }
+/* ═══════════════════════════════════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════════════════════════════════ */
+.cursor{
+  position:fixed;width:12px;height:12px;
+  background:var(--purple-lt);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s,opacity .2s;
+  mix-blend-mode:screen;
+}
+.cursor-trail{
+  position:fixed;width:32px;height:32px;
+  border:1.5px solid rgba(167,139,250,.3);
+  border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:all .15s ease-out;
+}
+.cursor.hovering{width:20px;height:20px;background:var(--cyan)}
+.cursor-trail.hovering{width:50px;height:50px;border-color:rgba(6,182,212,.3)}
 
-    .feature-card h4 {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .feature-card p {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── How it works ─────────────────────────────────────────────────── */
-    .how {
-      padding: 80px 5%;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .how-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-      margin-top: 48px;
-      position: relative;
-    }
-
-    /* Connecting line */
-    .steps::before {
-      content: '';
-      position: absolute;
-      top: 28px;
-      left: 16.6%;
-      right: 16.6%;
-      height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      opacity: 0.4;
-    }
-
-    .step {
-      text-align: center;
-      position: relative;
-    }
-
-    .step-num {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 900;
-      margin: 0 auto 20px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .step h4 {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .step p {
-      font-size: 14px;
-      color: var(--muted);
-      max-width: 240px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    /* ── CTA Section ──────────────────────────────────────────────────── */
-    .cta-section {
-      padding: 100px 5%;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-section h2 {
-      font-size: clamp(30px, 4vw, 50px);
-      font-weight: 900;
-      letter-spacing: -1px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-
-    .cta-section p {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 500px;
-      margin: 0 auto 40px;
-      position: relative;
-    }
-
-    .cta-section .btn {
-      padding: 16px 36px;
-      font-size: 17px;
-      position: relative;
-    }
-
-    /* ── Footer ───────────────────────────────────────────────────────── */
-    footer {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 40px 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .footer-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    footer nav {
-      position: static;
-      background: transparent;
-      backdrop-filter: none;
-      border: none;
-      padding: 0;
-      height: auto;
-    }
-
-    footer nav ul {
-      display: flex;
-      gap: 28px;
-      list-style: none;
-      font-size: 14px;
-    }
-
-    footer nav ul a { color: var(--muted); }
-    footer nav ul a:hover { color: var(--text); }
-
-    .footer-copy {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
-    /* ── Responsive ───────────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .hero-inner        { grid-template-columns: 1fr; text-align: center; }
-      .hero-text p       { margin: 0 auto 36px; }
-      .hero-actions      { justify-content: center; }
-      .hero-mascot       { order: -1; }
-      .mascot-wrap svg   { width: 260px; height: 260px; }
-      .stats             { grid-template-columns: 1fr; }
-      .features-grid     { grid-template-columns: 1fr; }
-      .steps             { grid-template-columns: 1fr; }
-      .steps::before     { display: none; }
-      .nav-links         { display: none; }
-    }
-  </style>
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;text-align:center}
+  .hero-sub{margin:0 auto 40px}
+  .hero-actions{justify-content:center}
+  .hero-trust{justify-content:center}
+  #chameleon-canvas{max-width:340px;margin:0 auto}
+  .hero-visual{order:-1}
+  .networks-grid{grid-template-columns:repeat(2,1fr)}
+  .features-grid{grid-template-columns:1fr 1fr}
+  .security-inner{grid-template-columns:1fr}
+  .cursor,.cursor-trail{display:none}
+}
+@media(max-width:600px){
+  .nav-links,.nav-right{display:none}
+  .nav-toggle{display:block}
+  .networks-grid,.features-grid{grid-template-columns:1fr}
+  .hero-h1{letter-spacing:-1px}
+}
+</style>
 </head>
 <body>
 
-<!-- ── NAVBAR ────────────────────────────────────────────────────────────── -->
-<nav>
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-trail" id="cursor-trail"></div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     NAVBAR
+══════════════════════════════════════════════════════════════════ -->
+<nav id="navbar">
   <div class="nav-logo">
-    <!-- Small chameleon in the nav -->
-    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="18" cy="22" rx="13" ry="9" fill="#22c55e"/>
-      <ellipse cx="18" cy="22" rx="10" ry="7" fill="#16a34a"/>
-      <!-- Stripes -->
-      <path d="M8 20 Q18 16 28 20" stroke="#15803d" stroke-width="1.5" fill="none"/>
-      <path d="M8 23 Q18 19 28 23" stroke="#15803d" stroke-width="1.5" fill="none"/>
-      <!-- Head -->
-      <ellipse cx="28" cy="18" rx="6" ry="5" fill="#22c55e"/>
-      <!-- Eye -->
-      <circle cx="31" cy="16" r="2.5" fill="#fff"/>
-      <circle cx="31.8" cy="16" r="1.2" fill="#1a1b1e"/>
-      <circle cx="32.3" cy="15.5" r="0.4" fill="#fff"/>
-      <!-- Tail curl -->
-      <path d="M8 24 Q2 26 4 30 Q6 34 10 32" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <!-- Tongue -->
-      <path d="M34 18 L40 15" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="40" cy="15" r="1.5" fill="#ef4444"/>
-      <!-- Legs -->
-      <path d="M13 29 L11 35" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M18 30 L16 36" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M23 29 L25 35" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
-    ChameleonWallet
+    <div class="nav-logo-icon">🦎</div>
+    <span>CHAMELEON</span>
   </div>
 
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#download">Download</a></li>
-    <li><a href="#">Docs</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="#networks">Networks</a></li>
+    <li><a href="#preview">Wallet</a></li>
   </ul>
 
-  <div class="nav-cta">
-    <button class="btn btn-outline">Log In</button>
-    <button class="btn btn-primary">Download Now</button>
+  <div class="nav-right">
+    <button class="btn btn-connect" id="nav-connect-btn">Connect Wallet</button>
   </div>
+
+  <button class="nav-toggle" id="nav-toggle" aria-label="menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 
-<!-- ── HERO ──────────────────────────────────────────────────────────────── -->
-<section class="hero">
+<!-- ══════════════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="glow-orb orb1"></div>
+  <div class="glow-orb orb2"></div>
+
   <div class="hero-inner">
     <div class="hero-text">
-      <h1>The Crypto Wallet That <span>Adapts To You</span></h1>
-      <p>
-        ChameleonWallet lets you manage Ethereum, send transactions,
-        and connect to any dApp — securely, privately, right in your browser.
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        Web3 Identity Layer
+      </div>
+
+      <h1 class="hero-h1">
+        Adapt to<br/>
+        <span class="gradient-text">Every Chain.</span>
+      </h1>
+
+      <p class="hero-sub">
+        One intelligent wallet. Multiple ecosystems.
+        Secure, self-custodial control of your digital assets — right in your browser.
       </p>
+
       <div class="hero-actions">
-        <button class="btn btn-primary" id="download">Install for Chrome</button>
-        <button class="btn btn-outline">Learn More</button>
+        <button class="btn btn-primary btn-lg" id="hero-connect-btn">
+          <span>⬡</span> Connect Wallet
+        </button>
+        <button class="btn btn-ghost btn-lg" id="hero-explore-btn">
+          Explore Wallet →
+        </button>
+      </div>
+
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <div class="trust-avatar">E</div>
+          <div class="trust-avatar">S</div>
+          <div class="trust-avatar">A</div>
+          <div class="trust-avatar">+</div>
+        </div>
+        <span>Self-custodial · AES-256-GCM · BIP-39 standard</span>
       </div>
     </div>
 
-    <div class="hero-mascot">
-      <div class="mascot-wrap">
-        <!-- Large chameleon SVG mascot -->
-        <svg width="400" height="400" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="hero-visual">
+      <canvas id="chameleon-canvas" width="540" height="540"></canvas>
+    </div>
+  </div>
 
-          <!-- Glow circle behind -->
-          <circle cx="100" cy="110" r="75" fill="url(#heroGlow)" opacity="0.3"/>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
 
-          <!-- Body -->
-          <ellipse cx="95" cy="120" rx="58" ry="42" fill="#22c55e"/>
-          <!-- Body shading -->
-          <ellipse cx="95" cy="115" rx="50" ry="34" fill="#16a34a"/>
-          <!-- Body pattern stripes -->
-          <path d="M42 112 Q95 96 148 112" stroke="#15803d" stroke-width="3" fill="none" opacity="0.7"/>
-          <path d="M42 120 Q95 104 148 120" stroke="#15803d" stroke-width="3" fill="none" opacity="0.7"/>
-          <path d="M42 128 Q95 112 148 128" stroke="#15803d" stroke-width="3" fill="none" opacity="0.7"/>
 
-          <!-- Belly (lighter) -->
-          <ellipse cx="95" cy="128" rx="35" ry="22" fill="#4ade80" opacity="0.5"/>
+<!-- ══════════════════════════════════════════════════════════════════
+     NETWORKS
+══════════════════════════════════════════════════════════════════ -->
+<section id="networks">
+  <div class="networks-inner">
+    <div class="networks-header reveal">
+      <div class="section-tag">Supported Networks</div>
+      <h2>One Wallet. <span class="gradient-text">Every Ecosystem.</span></h2>
+      <p>Switch between networks instantly. Your wallet adapts to wherever you need to be.</p>
+    </div>
 
-          <!-- Head -->
-          <ellipse cx="152" cy="100" rx="30" ry="25" fill="#22c55e"/>
-          <!-- Head ridge / crest -->
-          <path d="M140 78 Q155 68 168 75 Q162 85 152 83 Q144 82 140 78Z" fill="#16a34a"/>
-          <path d="M145 72 Q158 62 168 68" stroke="#15803d" stroke-width="2" fill="none"/>
+    <div class="networks-grid">
+      <!-- Only showing networks actually supported by the wallet -->
+      <div class="network-card active reveal reveal-delay-1"
+           data-color-glow="rgba(124,58,237,.15)"
+           data-color-border="rgba(124,58,237,.4)"
+           style="--card-glow:rgba(124,58,237,.15);--card-border:rgba(124,58,237,.4)">
+        <div class="network-icon">⬡</div>
+        <div class="network-name">Ethereum Mainnet</div>
+        <div class="network-desc">The original smart contract platform. Deploy and interact with production dApps using real ETH.</div>
+        <div class="network-status">Supported</div>
+      </div>
 
-          <!-- Casque bumps (chameleon head crest) -->
-          <circle cx="144" cy="78" r="4" fill="#15803d"/>
-          <circle cx="153" cy="73" r="3.5" fill="#15803d"/>
-          <circle cx="162" cy="72" r="3" fill="#15803d"/>
+      <div class="network-card reveal reveal-delay-2"
+           style="--card-glow:rgba(100,116,139,.12);--card-border:rgba(100,116,139,.3)">
+        <div class="network-icon">🧪</div>
+        <div class="network-name">Sepolia Testnet</div>
+        <div class="network-desc">Ethereum's primary testnet. Build, test, and experiment with zero real value at stake.</div>
+        <div class="network-status">Supported</div>
+      </div>
 
-          <!-- Eye (large, iconic chameleon eye) -->
-          <circle cx="164" cy="90" r="14" fill="#fff"/>
-          <circle cx="164" cy="90" r="11" fill="#06b6d4"/>
-          <circle cx="164" cy="90" r="7" fill="#0e7490"/>
-          <circle cx="164" cy="90" r="4" fill="#1a1b1e"/>
-          <!-- Eye shine -->
-          <circle cx="167" cy="87" r="2" fill="#fff"/>
-          <circle cx="162" cy="92" r="1" fill="#fff" opacity="0.6"/>
-          <!-- Eye ring -->
-          <circle cx="164" cy="90" r="14" stroke="#0891b2" stroke-width="2" fill="none"/>
-
-          <!-- Tongue -->
-          <path d="M178 100 Q196 88 208 82" stroke="#ef4444" stroke-width="4" stroke-linecap="round" fill="none"/>
-          <!-- Tongue tip (forked) -->
-          <path d="M206 80 L212 76 M206 80 L210 85" stroke="#ef4444" stroke-width="3" stroke-linecap="round" fill="none"/>
-          <!-- Tongue sticky ball -->
-          <circle cx="207" cy="81" r="5" fill="#dc2626"/>
-
-          <!-- Tail (curled) -->
-          <path d="M40 128 Q20 135 18 148 Q16 162 26 168 Q36 172 42 162 Q48 152 38 148"
-                stroke="#22c55e" stroke-width="10" stroke-linecap="round" fill="none"/>
-          <path d="M40 128 Q20 135 18 148 Q16 162 26 168 Q36 172 42 162 Q48 152 38 148"
-                stroke="#16a34a" stroke-width="6" stroke-linecap="round" fill="none"/>
-
-          <!-- Legs -->
-          <!-- Front left -->
-          <path d="M70 148 Q62 162 58 170" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
-          <path d="M58 170 L52 175 M58 170 L62 176 M58 170 L56 177" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
-
-          <!-- Front right -->
-          <path d="M90 152 Q86 166 82 174" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
-          <path d="M82 174 L76 179 M82 174 L84 180" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
-
-          <!-- Back left -->
-          <path d="M110 152 Q116 166 120 174" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
-          <path d="M120 174 L126 179 M120 174 L118 180" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
-
-          <!-- Back right -->
-          <path d="M128 148 Q136 162 140 170" stroke="#16a34a" stroke-width="9" stroke-linecap="round" fill="none"/>
-          <path d="M140 170 L146 175 M140 170 L144 176 M140 170 L138 177" stroke="#16a34a" stroke-width="4" stroke-linecap="round" fill="none"/>
-
-          <!-- Spine ridge -->
-          <path d="M55 100 Q75 88 95 86 Q115 84 135 90"
-                stroke="#15803d" stroke-width="5" stroke-linecap="round" fill="none"/>
-          <!-- Spine bumps -->
-          <circle cx="65"  cy="96"  r="5" fill="#15803d"/>
-          <circle cx="80"  cy="90"  r="5" fill="#15803d"/>
-          <circle cx="95"  cy="87"  r="5" fill="#15803d"/>
-          <circle cx="110" cy="87"  r="5" fill="#15803d"/>
-          <circle cx="125" cy="90"  r="5" fill="#15803d"/>
-
-          <!-- Crypto coins floating around -->
-          <g opacity="0.9">
-            <!-- ETH diamond -->
-            <polygon points="35,55 28,65 35,70 42,65" fill="#7c3aed" opacity="0.9"/>
-            <polygon points="35,55 28,65 35,62" fill="#9d6ef5"/>
-            <polygon points="35,70 42,65 35,62" fill="#5b21b6"/>
-          </g>
-          <g opacity="0.8">
-            <!-- Small coin -->
-            <circle cx="170" cy="140" r="10" fill="#f59e0b" opacity="0.85"/>
-            <text x="170" y="144" text-anchor="middle" font-size="9" font-weight="bold" fill="#1a1b1e">₿</text>
-          </g>
-          <g opacity="0.7">
-            <!-- Tiny ETH -->
-            <polygon points="50,155 46,161 50,163 54,161" fill="#06b6d4" opacity="0.8"/>
-            <polygon points="50,155 46,161 50,159" fill="#67e8f9"/>
-          </g>
-
-          <!-- Gradient defs -->
-          <defs>
-            <radialGradient id="heroGlow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%"   stop-color="#7c3aed"/>
-              <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-        </svg>
+      <div class="network-card reveal reveal-delay-3"
+           style="--card-glow:rgba(6,182,212,.12);--card-border:rgba(6,182,212,.3)">
+        <div class="network-icon">🔧</div>
+        <div class="network-name">Anvil Local</div>
+        <div class="network-desc">Local development node via Foundry. Instant blocks, pre-funded accounts, zero latency.</div>
+        <div class="network-status" style="color:var(--cyan)">Development</div>
       </div>
     </div>
   </div>
 </section>
 
 
-<!-- ── TRUSTED BY ─────────────────────────────────────────────────────────── -->
-<div class="trusted">
-  <p>Trusted by developers building on</p>
-  <div class="trusted-logos">
-    <span>Ethereum</span>
-    <span>Uniswap</span>
-    <span>OpenSea</span>
-    <span>Aave</span>
-    <span>Compound</span>
-    <span>ENS</span>
+<!-- ══════════════════════════════════════════════════════════════════
+     FEATURES
+══════════════════════════════════════════════════════════════════ -->
+<section id="features">
+  <div class="features-inner">
+    <div class="features-header reveal">
+      <div class="section-tag">Capabilities</div>
+      <h2>Built for the <span class="gradient-text">serious Web3 user.</span></h2>
+      <p>Everything you need to interact with Ethereum — nothing bloated, nothing unnecessary.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon-wrap">🔐</div>
+        <h4>Self-Custodial Keys</h4>
+        <p>Your private keys never leave your device. AES-256-GCM encryption with PBKDF2 key derivation (210,000 iterations) protects your vault.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon-wrap">⚡</div>
+        <h4>Fast Transactions</h4>
+        <p>Real-time gas estimation with 20% safety buffer. Review fees before confirming. Signed locally, broadcast instantly.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon-wrap">🌐</div>
+        <h4>dApp Provider</h4>
+        <p>Injects a standard <code style="font-family:monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px">window.ethereum</code> provider. Works with Uniswap, OpenSea, and any EIP-1193 compatible dApp.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon-wrap">🔀</div>
+        <h4>Network Switching</h4>
+        <p>Switch between Mainnet, Sepolia, and local Anvil dev nodes in one click. The active network persists for dApp signing.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon-wrap">🌱</div>
+        <h4>BIP-39 Recovery</h4>
+        <p>Standard 12-word seed phrase (BIP-44 derivation path). Import your existing wallet from any compatible device at any time.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <div class="feature-icon-wrap">✍️</div>
+        <h4>Message Signing</h4>
+        <p>Sign arbitrary messages with EIP-191 prefix via <code style="font-family:monospace;font-size:12px;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:4px">personal_sign</code>. Approval popup shows the decoded message before signing.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>
 
 
-<!-- ── STATS ──────────────────────────────────────────────────────────────── -->
-<div class="stats">
-  <div class="stat">
-    <h3>30M+</h3>
-    <p>Monthly active users</p>
+<!-- ══════════════════════════════════════════════════════════════════
+     SECURITY
+══════════════════════════════════════════════════════════════════ -->
+<section id="security">
+  <div class="security-inner">
+    <div class="security-text reveal">
+      <div class="section-tag">Security</div>
+      <h2>Your Keys.<br/><span class="gradient-text">Your Control.</span></h2>
+      <p>Every private key is encrypted before it ever touches storage. We never see your password, your seed phrase, or your private key.</p>
+      <p>The chameleon doesn't trust blindly — and neither does your wallet.</p>
+
+      <div class="security-items">
+        <div class="security-item">
+          <div class="security-item-icon">🛡️</div>
+          <div>
+            <h5>AES-256-GCM Encryption</h5>
+            <p>Authenticated encryption with 256-bit keys. Detects tampering — a wrong password fails loudly, never silently.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <div class="security-item-icon">🔑</div>
+          <div>
+            <h5>PBKDF2 Key Derivation</h5>
+            <p>210,000 SHA-256 iterations transform your password into a cryptographic key. Brute-force resistant by design.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <div class="security-item-icon">🏠</div>
+          <div>
+            <h5>Local Storage Only</h5>
+            <p>Encrypted vault stored in <code style="font-family:monospace;font-size:11px">chrome.storage.local</code> — sandboxed to this extension, inaccessible to other sites or extensions.</p>
+          </div>
+        </div>
+        <div class="security-item">
+          <div class="security-item-icon">👁️</div>
+          <div>
+            <h5>Approval-Gated Signing</h5>
+            <p>Every dApp transaction and message signature requires explicit user approval in a separate popup before signing occurs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-visual reveal reveal-delay-2">
+      <canvas id="crypto-canvas"></canvas>
+      <div class="security-shield">
+        <div class="shield-icon">🦎</div>
+        <div class="shield-text">Guardian of Your Keys</div>
+        <div class="shield-sub">Zero knowledge. Zero trust. Full control.</div>
+      </div>
+    </div>
   </div>
-  <div class="stat">
-    <h3>$0</h3>
-    <p>Always free to use</p>
-  </div>
-  <div class="stat">
-    <h3>100+</h3>
-    <p>Networks supported</p>
-  </div>
-</div>
+</section>
 
 
-<!-- ── FEATURES ───────────────────────────────────────────────────────────── -->
-<section class="features" id="features">
-  <p class="section-label">Why ChameleonWallet</p>
-  <h2 class="section-title">Everything you need,<br/>nothing you don't</h2>
-  <p class="section-sub">
-    A self-custodial wallet built for security, simplicity, and full
-    compatibility with the Ethereum ecosystem.
+<!-- ══════════════════════════════════════════════════════════════════
+     WALLET PREVIEW
+══════════════════════════════════════════════════════════════════ -->
+<section id="preview">
+  <div class="preview-inner">
+    <div class="preview-header reveal">
+      <div class="section-tag">Live Preview</div>
+      <h2>The Wallet, <span class="gradient-text">as it actually looks.</span></h2>
+      <p>A real mockup of the wallet interface — same design system, same components.</p>
+    </div>
+
+    <div class="preview-mockup reveal reveal-delay-1">
+      <!-- Top bar -->
+      <div class="mockup-top">
+        <div class="mockup-network">
+          <div class="mockup-network-dot"></div>
+          ⬡ Ethereum Mainnet
+        </div>
+        <div class="mockup-lock">🔒 Lock</div>
+      </div>
+
+      <!-- Body -->
+      <div class="mockup-body">
+        <div class="mockup-avatar"></div>
+        <div class="mockup-address">
+          <span>0x71C7...3E4F</span>
+          <span class="mockup-copy">📋</span>
+        </div>
+
+        <div class="mockup-balance-label">Balance</div>
+        <div class="mockup-balance">1.2847</div>
+        <div class="mockup-balance-usd">≈ $3,241.16 USD</div>
+
+        <div class="mockup-actions">
+          <button class="mockup-btn mockup-btn-primary">↑ Send</button>
+          <button class="mockup-btn mockup-btn-secondary">↓ Receive</button>
+        </div>
+
+        <div class="mockup-section-title">Assets</div>
+        <div class="mockup-token">
+          <div class="token-icon" style="background:linear-gradient(135deg,#6d28d9,#1e40af)">Ξ</div>
+          <div class="token-info">
+            <div class="token-name">Ethereum</div>
+            <div class="token-network">Mainnet</div>
+          </div>
+          <div class="token-amount">
+            <div class="token-balance">1.2847 ETH</div>
+            <div class="token-usd">$3,241.16</div>
+          </div>
+        </div>
+        <div class="mockup-token">
+          <div class="token-icon" style="background:linear-gradient(135deg,#0891b2,#1e3a8a)">S</div>
+          <div class="token-info">
+            <div class="token-name">Sepolia ETH</div>
+            <div class="token-network">Testnet</div>
+          </div>
+          <div class="token-amount">
+            <div class="token-balance">0.5 ETH</div>
+            <div class="token-usd">Testnet</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup-rpc">RPC: https://cloudflare-eth.com · chainId 1</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     FINAL CTA
+══════════════════════════════════════════════════════════════════ -->
+<section id="cta">
+  <h2 class="reveal">Ready to <span class="gradient-text">Adapt?</span></h2>
+  <p class="reveal reveal-delay-1">
+    Connect your wallet and enter the multi-chain Web3 world.
+    Self-custodial. Open source. Yours.
   </p>
-
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🔐</div>
-      <h4>Self-Custodial</h4>
-      <p>Your keys, your crypto. Private keys are encrypted locally with AES-256-GCM and never leave your device.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <h4>Instant Transactions</h4>
-      <p>Send ETH in seconds with real-time gas estimation. Review fees before you confirm — no surprises.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌐</div>
-      <h4>dApp Ready</h4>
-      <p>Connects to any dApp via the standard window.ethereum provider. Works with Uniswap, OpenSea, and more.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌍</div>
-      <h4>Multi-Network</h4>
-      <p>Switch between Ethereum Mainnet, Sepolia testnet, and local Anvil dev nodes in one click.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔒</div>
-      <h4>Password Protected</h4>
-      <p>Wallet locks automatically. PBKDF2 key derivation with 210,000 iterations protects against brute force.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌱</div>
-      <h4>BIP-39 Recovery</h4>
-      <p>Standard 12-word seed phrase. Import your wallet on any device at any time — you're always in control.</p>
-    </div>
+  <div class="cta-actions reveal reveal-delay-2">
+    <button class="btn btn-primary btn-lg" id="cta-connect-btn">
+      <span>🦎</span> Launch Wallet
+    </button>
+    <a href="https://github.com/chptt/Wallet--demo" target="_blank" rel="noreferrer"
+       class="btn btn-ghost btn-lg">
+      View on GitHub →
+    </a>
   </div>
 </section>
 
 
-<!-- ── HOW IT WORKS ───────────────────────────────────────────────────────── -->
-<section class="how" id="how">
-  <div class="how-inner">
-    <p class="section-label">Get Started</p>
-    <h2 class="section-title">Up and running in 60 seconds</h2>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h4>Install the Extension</h4>
-        <p>Add ChameleonWallet to Chrome from the Web Store — or load it unpacked from the source.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h4>Create Your Wallet</h4>
-        <p>Set a password and write down your 12-word seed phrase. That's your backup — keep it safe.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h4>Start Exploring Web3</h4>
-        <p>Connect to any dApp, send ETH, sign messages, and manage your assets on any EVM network.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- ── CTA ────────────────────────────────────────────────────────────────── -->
-<section class="cta-section" id="download">
-  <h2>Ready to take control of your crypto?</h2>
-  <p>Join millions of users managing their digital assets with complete self-custody.</p>
-  <button class="btn btn-primary">Install ChameleonWallet — It's Free</button>
-</section>
-
-
-<!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+<!-- ══════════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════════ -->
 <footer>
   <div class="footer-logo">
-    <svg width="28" height="28" viewBox="0 0 36 36" fill="none">
-      <ellipse cx="18" cy="22" rx="13" ry="9" fill="#22c55e"/>
-      <ellipse cx="18" cy="22" rx="10" ry="7" fill="#16a34a"/>
-      <ellipse cx="28" cy="18" rx="6" ry="5" fill="#22c55e"/>
-      <circle cx="31" cy="16" r="2" fill="#fff"/>
-      <circle cx="31.6" cy="16" r="1" fill="#1a1b1e"/>
-      <path d="M8 24 Q2 26 4 30 Q6 34 10 32" stroke="#22c55e" stroke-width="3" stroke-linecap="round" fill="none"/>
-    </svg>
-    ChameleonWallet
+    <div class="nav-logo-icon" style="width:28px;height:28px;font-size:14px">🦎</div>
+    CHAMELEON
   </div>
-
-  <nav>
-    <ul>
-      <li><a href="#">Privacy</a></li>
-      <li><a href="#">Terms</a></li>
-      <li><a href="#">GitHub</a></li>
-      <li><a href="#">Docs</a></li>
-    </ul>
-  </nav>
-
-  <p class="footer-copy">© 2026 ChameleonWallet. Open source. Not affiliated with MetaMask.</p>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Terms</a></li>
+    <li><a href="https://github.com/chptt/Wallet--demo" target="_blank">GitHub</a></li>
+    <li><a href="#">Docs</a></li>
+  </ul>
+  <p class="footer-copy">© 2026 ChameleonWallet — Open source, self-custodial.</p>
 </footer>
 
+
+<!-- WALLET CONNECT MODAL -->
+<div class="modal-overlay" id="wallet-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Connect Your Wallet</div>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <p class="modal-desc">Choose how you want to connect to the CHAMELEON wallet extension.</p>
+    <div class="modal-options">
+      <button class="modal-option" id="modal-create">
+        <span class="modal-option-icon">✨</span>
+        <div class="modal-option-text">
+          <h4>Create New Wallet</h4>
+          <p>Generate a new wallet with a 12-word seed phrase</p>
+        </div>
+      </button>
+      <button class="modal-option" id="modal-import">
+        <span class="modal-option-icon">📥</span>
+        <div class="modal-option-text">
+          <h4>Import Existing Wallet</h4>
+          <p>Restore your wallet using a seed phrase</p>
+        </div>
+      </button>
+      <button class="modal-option" id="modal-unlock">
+        <span class="modal-option-icon">🔓</span>
+        <div class="modal-option-text">
+          <h4>Unlock Wallet</h4>
+          <p>Enter your password to unlock an existing vault</p>
+        </div>
+      </button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:20px">
+      The wallet extension popup handles all wallet operations securely.
+    </p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════════════════ -->
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   CUSTOM CURSOR
+════════════════════════════════════════════════════════════════════ */
+const cursor = document.getElementById('cursor')
+const trail  = document.getElementById('cursor-trail')
+let mx=0, my=0, tx=0, ty=0
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY
+  cursor.style.left = mx + 'px'
+  cursor.style.top  = my + 'px'
+})
+
+// Trail with lag
+;(function animateTrail() {
+  tx += (mx - tx) * 0.14
+  ty += (my - ty) * 0.14
+  trail.style.left = tx + 'px'
+  trail.style.top  = ty + 'px'
+  requestAnimationFrame(animateTrail)
+})()
+
+document.querySelectorAll('button, a, .network-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.classList.add('hovering')
+    trail.classList.add('hovering')
+  })
+  el.addEventListener('mouseleave', () => {
+    cursor.classList.remove('hovering')
+    trail.classList.remove('hovering')
+  })
+})
+
+
+/* ════════════════════════════════════════════════════════════════════
+   NAVBAR SCROLL
+════════════════════════════════════════════════════════════════════ */
+const navbar = document.getElementById('navbar')
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 40)
+})
+
+
+/* ════════════════════════════════════════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════════════════════════════════════════ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
+}, { threshold: 0.12 })
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+
+
+/* ════════════════════════════════════════════════════════════════════
+   WALLET MODAL — opens when user clicks "Connect Wallet"
+   Buttons link to the actual extension popup.
+   Since this is a landing page (not inside the extension), we open
+   the wallet popup via chrome.action.openPopup if available,
+   or direct to the extension page.
+════════════════════════════════════════════════════════════════════ */
+const modal = document.getElementById('wallet-modal')
+const modalClose = document.getElementById('modal-close')
+
+function openModal() {
+  modal.classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+function closeModal() {
+  modal.classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+document.getElementById('nav-connect-btn').addEventListener('click', openModal)
+document.getElementById('hero-connect-btn').addEventListener('click', openModal)
+document.getElementById('cta-connect-btn').addEventListener('click', openModal)
+modalClose.addEventListener('click', closeModal)
+modal.addEventListener('click', e => { if (e.target === modal) closeModal() })
+
+// Hero Explore button scrolls to features
+document.getElementById('hero-explore-btn').addEventListener('click', () => {
+  document.getElementById('features').scrollIntoView({ behavior:'smooth' })
+})
+
+// Modal options — attempt to open the extension popup.
+// If running inside Chrome with the extension installed, use the extension URL.
+// Otherwise fall back to a helpful message.
+function openExtension(screen) {
+  // Try to detect if the extension is installed by checking window.ethereum
+  // (injected by the extension's content script)
+  const extId = detectExtensionId()
+  if (extId) {
+    const url = `chrome-extension://${extId}/index.html#screen=${screen}`
+    window.open(url, '_blank', 'width=400,height=620')
+  } else {
+    // Extension not detected — show helpful instructions
+    alert(
+      'Extension not detected.\n\n' +
+      'To use CHAMELEON:\n' +
+      '1. Open chrome://extensions\n' +
+      '2. Enable Developer Mode\n' +
+      '3. Click "Load unpacked"\n' +
+      '4. Select the /dist folder\n\n' +
+      'Then click the extension icon in your toolbar.'
+    )
+  }
+  closeModal()
+}
+
+function detectExtensionId() {
+  // If the page was opened from the extension itself, we know the ID
+  if (window.location.href.includes('chrome-extension://')) {
+    return window.location.href.match(/chrome-extension:\/\/([^/]+)/)?.[1]
+  }
+  // Check if window.ethereum was injected by our extension
+  if (window.ethereum && window.ethereum.isChameleon) {
+    return window.ethereum._extensionId
+  }
+  return null
+}
+
+document.getElementById('modal-create').addEventListener('click',  () => openExtension('onboarding'))
+document.getElementById('modal-import').addEventListener('click',  () => openExtension('import'))
+document.getElementById('modal-unlock').addEventListener('click',  () => openExtension('unlock'))
+
+
+/* ════════════════════════════════════════════════════════════════════
+   CHAMELEON CANVAS — Interactive animated 3D-style chameleon
+   Built entirely with Canvas 2D API — no external libraries needed.
+   
+   Architecture:
+   - All body parts are parametric (driven by time + mouse position)
+   - Smooth lerp interpolation for all movements
+   - Color shifts between purple/cyan/emerald based on mouse proximity
+   - Eye follows cursor globally
+   - Breathing idle animation on entire body
+════════════════════════════════════════════════════════════════════ */
+;(function() {
+  const canvas = document.getElementById('chameleon-canvas')
+  const ctx = canvas.getContext('2d')
+  
+  // ── State ──
+  let time = 0
+  let mouseX = canvas.width / 2
+  let mouseY = canvas.height / 2
+  // Smoothed values
+  let smoothMx = canvas.width / 2
+  let smoothMy = canvas.height / 2
+  let hoverIntensity = 0  // 0-1, increases near connect button
+  
+  // Color theme — cycles based on time + mouse
+  const themes = [
+    { body:'#1a3d2a', highlight:'#2d6644', dark:'#0d1f14', eye:'#1a5c4a', accent:'#34d399' },
+    { body:'#1e2d5c', highlight:'#2d4494', dark:'#0d1428', eye:'#1a2e5c', accent:'#818cf8' },
+    { body:'#2d1a4a', highlight:'#4a2d80', dark:'#150d24', eye:'#1a0d3a', accent:'#a78bfa' },
+    { body:'#0d3a4a', highlight:'#1a5c70', dark:'#061820', eye:'#0d2e40', accent:'#22d3ee' },
+  ]
+  let themeIdx = 0
+  let themeBlend = 0  // 0-1 blend between current and next theme
+
+  function lerpColor(c1, c2, t) {
+    const r1 = parseInt(c1.slice(1,3),16), g1 = parseInt(c1.slice(3,5),16), b1 = parseInt(c1.slice(5,7),16)
+    const r2 = parseInt(c2.slice(1,3),16), g2 = parseInt(c2.slice(3,5),16), b2 = parseInt(c2.slice(5,7),16)
+    const r = Math.round(r1+(r2-r1)*t).toString(16).padStart(2,'0')
+    const g = Math.round(g1+(g2-g1)*t).toString(16).padStart(2,'0')
+    const b = Math.round(b1+(b2-b1)*t).toString(16).padStart(2,'0')
+    return `#${r}${g}${b}`
+  }
+  
+  function getThemeColor(key) {
+    const cur = themes[themeIdx % themes.length]
+    const nxt = themes[(themeIdx+1) % themes.length]
+    return lerpColor(cur[key], nxt[key], themeBlend)
+  }
+  
+  // ── Mouse tracking (global, mapped to canvas) ──
+  document.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect()
+    mouseX = ((e.clientX - rect.left) / rect.width)  * canvas.width
+    mouseY = ((e.clientY - rect.top)  / rect.height) * canvas.height
+    
+    // Check if hovering the connect button
+    const btn = document.getElementById('hero-connect-btn')
+    const br  = btn.getBoundingClientRect()
+    const inBtn = e.clientX > br.left && e.clientX < br.right &&
+                  e.clientY > br.top  && e.clientY < br.bottom
+    hoverIntensity += ((inBtn ? 1 : 0) - hoverIntensity) * 0.06
+  })
+
+  // ── Draw helpers ──
+  function drawRoundedPath(points, radius, close) {
+    if (points.length < 2) return
+    ctx.beginPath()
+    ctx.moveTo((points[0][0]+points[1][0])/2, (points[0][1]+points[1][1])/2)
+    for (let i=1; i<points.length-(close?0:1); i++) {
+      const p1 = points[i]
+      const p2 = points[(i+1)%points.length]
+      ctx.arcTo(p1[0],p1[1], (p1[0]+p2[0])/2,(p1[1]+p2[1])/2, radius)
+    }
+    if (close) ctx.closePath()
+  }
+  
+  // ── Main draw function ──
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    
+    const W = canvas.width, H = canvas.height
+    const cx = W*0.48, cy = H*0.52  // body center
+    
+    // Smooth mouse
+    smoothMx += (mouseX - smoothMx) * 0.06
+    smoothMy += (mouseY - smoothMy) * 0.06
+    
+    // Normalized mouse position (relative to center, -1 to 1)
+    const nmx = (smoothMx - cx) / (W*0.4)
+    const nmy = (smoothMy - cy) / (H*0.4)
+    
+    // Idle breathing
+    const breath = Math.sin(time * 0.8) * 0.012
+    const sway   = Math.sin(time * 0.5) * 0.015
+    
+    // Theme cycling — slow
+    themeBlend += 0.003
+    if (themeBlend >= 1) { themeBlend = 0; themeIdx = (themeIdx+1) % themes.length }
+    
+    // Colors
+    const col    = getThemeColor('body')
+    const colHi  = getThemeColor('highlight')
+    const colDk  = getThemeColor('dark')
+    const colEye = getThemeColor('eye')
+    const colAcc = getThemeColor('accent')
+    
+    // Hover tint — when near connect button, shift toward purple
+    const purpleBlend = hoverIntensity * 0.4
+    
+    // ── GLOW ──
+    const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, W*0.45)
+    grd.addColorStop(0, `${colAcc}18`)
+    grd.addColorStop(1, 'transparent')
+    ctx.fillStyle = grd
+    ctx.fillRect(0,0,W,H)
+    
+    // ── TAIL (curled, behind body) ──
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.rotate(sway)
+    
+    const tailWave = Math.sin(time*0.7) * 8
+    ctx.beginPath()
+    ctx.moveTo(-80, 30)
+    ctx.bezierCurveTo(-120,60+tailWave, -160+tailWave,90, -170,130)
+    ctx.bezierCurveTo(-180,160+tailWave, -160,190, -130,185)
+    ctx.bezierCurveTo(-100,178, -88,160, -100,145)
+    ctx.bezierCurveTo(-112,130+tailWave, -125,128, -118,138)
+    
+    const tailGrd = ctx.createLinearGradient(-180,130,-80,30)
+    tailGrd.addColorStop(0, colDk)
+    tailGrd.addColorStop(1, col)
+    ctx.strokeStyle = tailGrd
+    ctx.lineWidth = 18
+    ctx.lineCap = 'round'
+    ctx.stroke()
+    
+    // Tail highlight
+    ctx.beginPath()
+    ctx.moveTo(-80, 26)
+    ctx.bezierCurveTo(-118,56+tailWave, -156+tailWave,86, -166,126)
+    ctx.strokeStyle = colHi + '60'
+    ctx.lineWidth = 6
+    ctx.stroke()
+    ctx.restore()
+    
+    // ── BACK LEGS ──
+    const legWave = Math.sin(time * 1.2) * 4
+    
+    ;[[70, 60, 100, 130, 120, 160, colDk], [120, 65, 148, 135, 160, 165, colDk]].forEach(([x1,y1,x2,y2,x3,y3,c]) => {
+      ctx.beginPath()
+      ctx.moveTo(cx+x1*0.9, cy+y1*(1+breath)+legWave)
+      ctx.quadraticCurveTo(cx+x2*0.9, cy+y2*(1+breath)+legWave, cx+x3*0.9, cy+y3*(1+breath)+legWave)
+      ctx.strokeStyle = c
+      ctx.lineWidth = 18; ctx.lineCap = 'round'
+      ctx.stroke()
+      // Toes
+      for (let t=0;t<3;t++) {
+        ctx.beginPath()
+        const tx = cx+x3*0.9 + (t-1)*10
+        const ty = cy+y3*(1+breath)+legWave
+        ctx.moveTo(tx, ty)
+        ctx.lineTo(tx + (t-1)*8, ty+14)
+        ctx.strokeStyle = colDk; ctx.lineWidth = 5; ctx.stroke()
+      }
+    })
+    
+    // ── MAIN BODY ──
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.scale(1 + breath, 1 - breath*0.5)
+    
+    const bodyGrd = ctx.createRadialGradient(-20,-15, 10, 0, 0, 160)
+    bodyGrd.addColorStop(0, colHi)
+    bodyGrd.addColorStop(0.5, col)
+    bodyGrd.addColorStop(1, colDk)
+    
+    ctx.beginPath()
+    ctx.ellipse(0, 10, 115, 65, sway*0.5, 0, Math.PI*2)
+    ctx.fillStyle = bodyGrd
+    ctx.fill()
+    
+    // Scale texture (subtle hexagonal pattern)
+    ctx.globalAlpha = 0.18
+    for (let row=0; row<8; row++) {
+      for (let col2=0; col2<14; col2++) {
+        const px = -100 + col2*16 + (row%2)*8
+        const py = -50 + row*14
+        if (px*px/(115*115) + py*py/(65*65) < 0.85) {
+          ctx.beginPath()
+          ctx.arc(px, py, 5, 0, Math.PI*2)
+          ctx.strokeStyle = colDk
+          ctx.lineWidth = 0.8
+          ctx.stroke()
+        }
+      }
+    }
+    ctx.globalAlpha = 1
+    
+    // Belly highlight
+    const bellyGrd = ctx.createRadialGradient(-10, 20, 5, 0, 25, 80)
+    bellyGrd.addColorStop(0, colHi + '50')
+    bellyGrd.addColorStop(1, 'transparent')
+    ctx.beginPath()
+    ctx.ellipse(-5, 25, 70, 38, 0, 0, Math.PI*2)
+    ctx.fillStyle = bellyGrd
+    ctx.fill()
+    
+    // Top rim light
+    ctx.beginPath()
+    ctx.ellipse(-5, -10, 95, 50, sway*0.5, Math.PI*1.1, Math.PI*1.9)
+    ctx.strokeStyle = colHi + '90'
+    ctx.lineWidth = 2.5; ctx.stroke()
+    
+    ctx.restore()
+    
+    // ── SPINE DORSAL FINS ──
+    const spineX = [-80,-55,-30,-5,20,45,70,90]
+    const spineAngles = [-0.35,-0.28,-0.2,-0.12,-0.05,0.03,0.1,0.18]
+    spineX.forEach((sx, i) => {
+      const h = 22 - i*1.5 + Math.sin(time*0.9 + i*0.4) * 3
+      const spineGrd = ctx.createLinearGradient(cx+sx, cy-65, cx+sx, cy-65-h)
+      spineGrd.addColorStop(0, col)
+      spineGrd.addColorStop(1, colAcc + '88')
+      
+      ctx.save()
+      ctx.translate(cx+sx, cy-62 + Math.sin(time*0.9+i*0.4)*2)
+      ctx.rotate(spineAngles[i])
+      ctx.beginPath()
+      ctx.ellipse(0, -h/2, 5, h/2, 0, 0, Math.PI*2)
+      ctx.fillStyle = spineGrd
+      ctx.fill()
+      ctx.restore()
+    })
+    
+    // ── HEAD ──
+    const hx = cx + 130 + nmx*12
+    const hy = cy - 20  + nmy*10 + Math.sin(time*0.7)*4
+    
+    const headGrd = ctx.createRadialGradient(hx-15, hy-15, 5, hx, hy, 65)
+    headGrd.addColorStop(0, colHi)
+    headGrd.addColorStop(0.5, col)
+    headGrd.addColorStop(1, colDk)
+    
+    ctx.beginPath()
+    ctx.ellipse(hx, hy, 58, 46, -0.15+nmx*0.1, 0, Math.PI*2)
+    ctx.fillStyle = headGrd
+    ctx.fill()
+    
+    // ── CASQUE (head crest) ──
+    ctx.beginPath()
+    ctx.moveTo(hx-30, hy-30)
+    ctx.bezierCurveTo(hx-10, hy-70, hx+30, hy-75, hx+50, hy-55)
+    ctx.bezierCurveTo(hx+42, hy-38, hx+20, hy-32, hx, hy-28)
+    ctx.closePath()
+    const casqueGrd = ctx.createLinearGradient(hx-30, hy-70, hx+50, hy-30)
+    casqueGrd.addColorStop(0, colHi)
+    casqueGrd.addColorStop(1, colDk)
+    ctx.fillStyle = casqueGrd
+    ctx.fill()
+    
+    // Casque bumps
+    ;[-10, 8, 24, 38].forEach((bx, i) => {
+      const by = -65 + i*4
+      const bumpGrd = ctx.createRadialGradient(hx+bx, hy+by, 0, hx+bx, hy+by, 8)
+      bumpGrd.addColorStop(0, colHi)
+      bumpGrd.addColorStop(1, col)
+      ctx.beginPath()
+      ctx.arc(hx+bx, hy+by, 6-i*0.5, 0, Math.PI*2)
+      ctx.fillStyle = bumpGrd
+      ctx.fill()
+    })
+    
+    // Head-neck join
+    const neckGrd = ctx.createLinearGradient(cx+90, cy, hx-30, hy)
+    neckGrd.addColorStop(0, col)
+    neckGrd.addColorStop(1, col)
+    ctx.beginPath()
+    ctx.moveTo(cx+88, cy-18)
+    ctx.bezierCurveTo(cx+110, cy-25, hx-35, hy-20, hx-28, hy)
+    ctx.bezierCurveTo(hx-35, hy+20, cx+110, cy+20, cx+88, cy+22)
+    ctx.closePath()
+    ctx.fillStyle = neckGrd
+    ctx.fill()
+    
+    // ── EYE (turret-style, tracks cursor) ──
+    const eyeX = hx + 30 + nmx*5
+    const eyeY = hy - 8  + nmy*4
+    
+    // Turret base
+    const turretGrd = ctx.createRadialGradient(eyeX-5, eyeY-5, 2, eyeX, eyeY, 22)
+    turretGrd.addColorStop(0, colHi)
+    turretGrd.addColorStop(0.6, col)
+    turretGrd.addColorStop(1, colDk)
+    ctx.beginPath()
+    ctx.arc(eyeX, eyeY, 22, 0, Math.PI*2)
+    ctx.fillStyle = turretGrd
+    ctx.fill()
+    ctx.strokeStyle = colDk; ctx.lineWidth = 2; ctx.stroke()
+    
+    // Iris
+    const irisGrd = ctx.createRadialGradient(eyeX-3, eyeY-3, 1, eyeX, eyeY, 16)
+    irisGrd.addColorStop(0, colEye)
+    irisGrd.addColorStop(1, colDk)
+    ctx.beginPath()
+    ctx.arc(eyeX, eyeY, 16, 0, Math.PI*2)
+    ctx.fillStyle = irisGrd
+    ctx.fill()
+    
+    // Pupil (vertical slit) — points toward cursor
+    const angle = Math.atan2(smoothMy - (cy+eyeY-cy), smoothMx - (cx+eyeX-cx)) || 0
+    ctx.save()
+    ctx.translate(eyeX, eyeY)
+    // Pupil tracks cursor direction
+    const pdx = Math.cos(angle)*3
+    const pdy = Math.sin(angle)*3
+    ctx.beginPath()
+    ctx.ellipse(pdx, pdy, 4, 9, 0, 0, Math.PI*2)
+    ctx.fillStyle = '#000'
+    ctx.fill()
+    ctx.beginPath()
+    ctx.ellipse(pdx, pdy, 2.5, 7, 0, 0, Math.PI*2)
+    ctx.fillStyle = '#030a08'
+    ctx.fill()
+    ctx.restore()
+    
+    // Specular highlights
+    ctx.beginPath()
+    ctx.arc(eyeX-7, eyeY-7, 4.5, 0, Math.PI*2)
+    ctx.fillStyle = 'rgba(255,255,255,0.75)'
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(eyeX-5, eyeY-5, 2, 0, Math.PI*2)
+    ctx.fillStyle = 'rgba(255,255,255,0.95)'
+    ctx.fill()
+    // Secondary reflection
+    ctx.beginPath()
+    ctx.arc(eyeX+6, eyeY+5, 2, 0, Math.PI*2)
+    ctx.fillStyle = 'rgba(255,255,255,0.25)'
+    ctx.fill()
+    
+    // ── TONGUE ──
+    if (Math.sin(time * 0.3) > 0.7) {  // tongue flicks occasionally
+      const tongueExt = (Math.sin(time * 0.3) - 0.7) * 3.3
+      const tx2 = hx + 55 + tongueExt * 45
+      const ty2 = hy + 8  + Math.sin(time*2)*4
+      
+      ctx.beginPath()
+      ctx.moveTo(hx+52, hy+6)
+      ctx.quadraticCurveTo(hx+54+tongueExt*20, hy+6+Math.sin(time*3)*6, tx2, ty2)
+      
+      const tongueGrd = ctx.createLinearGradient(hx+52, hy, tx2, ty2)
+      tongueGrd.addColorStop(0, '#5a1a1a')
+      tongueGrd.addColorStop(1, '#7a2a2a')
+      ctx.strokeStyle = tongueGrd
+      ctx.lineWidth = 5; ctx.lineCap = 'round'
+      ctx.stroke()
+      
+      // Tip
+      ctx.beginPath()
+      ctx.arc(tx2, ty2, 5, 0, Math.PI*2)
+      ctx.fillStyle = '#6b1919'; ctx.fill()
+      
+      // Fork
+      ctx.beginPath()
+      ctx.moveTo(tx2, ty2)
+      ctx.lineTo(tx2+8, ty2-5)
+      ctx.moveTo(tx2, ty2)
+      ctx.lineTo(tx2+7, ty2+6)
+      ctx.strokeStyle = '#6b1919'; ctx.lineWidth = 3; ctx.stroke()
+    }
+    
+    // ── FRONT LEGS ──
+    ;[[-60, 50, -80, 130, -90, 165], [-20, 55, -30, 135, -35, 168]].forEach(([x1,y1,x2,y2,x3,y3]) => {
+      const wave = Math.sin(time*1.1)*3
+      ctx.beginPath()
+      ctx.moveTo(cx+x1, cy+y1*(1+breath)+wave)
+      ctx.quadraticCurveTo(cx+x2, cy+y2*(1+breath)+wave, cx+x3, cy+y3*(1+breath)+wave)
+      
+      const legGrd = ctx.createLinearGradient(cx+x1, cy+y1, cx+x3, cy+y3)
+      legGrd.addColorStop(0, col)
+      legGrd.addColorStop(1, colDk)
+      ctx.strokeStyle = legGrd; ctx.lineWidth = 16; ctx.lineCap = 'round'; ctx.stroke()
+      
+      // Highlight
+      ctx.beginPath()
+      ctx.moveTo(cx+x1-2, cy+y1*(1+breath)+wave-2)
+      ctx.quadraticCurveTo(cx+x2-2, cy+y2*(1+breath)+wave-2, cx+x3-2, cy+y3*(1+breath)+wave-2)
+      ctx.strokeStyle = colHi+'55'; ctx.lineWidth = 4; ctx.stroke()
+      
+      // Toes
+      for (let t=0;t<3;t++) {
+        ctx.beginPath()
+        ctx.moveTo(cx+x3, cy+y3*(1+breath)+wave)
+        ctx.lineTo(cx+x3+(t-1)*9, cy+y3*(1+breath)+wave+15)
+        ctx.strokeStyle = colDk; ctx.lineWidth = 4.5; ctx.lineCap='round'; ctx.stroke()
+      }
+    })
+    
+    // ── HOVER AURA — color shift when near connect button ──
+    if (hoverIntensity > 0.05) {
+      const aura = ctx.createRadialGradient(cx, cy, 50, cx, cy, 220)
+      aura.addColorStop(0, `rgba(124,58,237,${hoverIntensity*0.15})`)
+      aura.addColorStop(1, 'transparent')
+      ctx.beginPath()
+      ctx.ellipse(cx, cy, 220, 160, 0, 0, Math.PI*2)
+      ctx.fillStyle = aura
+      ctx.fill()
+    }
+    
+    time += 0.016
+    requestAnimationFrame(draw)
+  }
+  
+  draw()
+})()
+
+
+/* ════════════════════════════════════════════════════════════════════
+   CRYPTO BACKGROUND CANVAS (security section)
+════════════════════════════════════════════════════════════════════ */
+;(function() {
+  const canvas = document.getElementById('crypto-canvas')
+  if (!canvas) return
+  const ctx = canvas.getContext('2d')
+  
+  function resize() {
+    const parent = canvas.parentElement
+    canvas.width  = parent.offsetWidth
+    canvas.height = parent.offsetHeight
+  }
+  resize()
+  window.addEventListener('resize', resize)
+  
+  const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ'.split('')
+  const cols = Math.floor(canvas.width / 18)
+  const drops = Array(cols).fill(0).map(() => Math.random()*canvas.height/14)
+  
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(7,8,10,0.06)'
+    ctx.fillRect(0,0,canvas.width,canvas.height)
+    
+    ctx.font = '13px monospace'
+    drops.forEach((y, i) => {
+      const c = chars[Math.floor(Math.random()*chars.length)]
+      const alpha = 0.08 + Math.random()*0.08
+      ctx.fillStyle = `rgba(52,211,153,${alpha})`
+      ctx.fillText(c, i*18, y*14)
+      if (y*14 > canvas.height && Math.random() > 0.975) drops[i] = 0
+      else drops[i] += 0.5
+    })
+    requestAnimationFrame(drawMatrix)
+  }
+  drawMatrix()
+})()
+
+
+/* ════════════════════════════════════════════════════════════════════
+   NETWORK CARD INTERACTION
+════════════════════════════════════════════════════════════════════ */
+document.querySelectorAll('.network-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.network-card').forEach(c => c.classList.remove('active'))
+    card.classList.add('active')
+  })
+})
+
+</script>
 </body>
 </html>
